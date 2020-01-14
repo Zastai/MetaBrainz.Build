@@ -5,6 +5,7 @@
   <!-- Settings used by the common settings. -->
   <PropertyGroup>
     <PackageCopyrightYears>2xxx</PackageCopyrightYears>
+    <PackageRepositoryName>XXXX</PackageRepositoryName>
   </PropertyGroup>
 
   <!-- Get common settings. -->
@@ -16,9 +17,6 @@
 
   <!-- Other tree-specific properties. -->
   <PropertyGroup>
-    <PackageProjectUrl>https://github.com/Zastai/XXX/blob/master/README.md</PackageProjectUrl>
-    <Product>MetaBrainz.XXX</Product>
-    <RepositoryUrl>https://github.com/Zastai/XXX</RepositoryUrl>
   </PropertyGroup>
 
   <!-- Get local (user-specific, non version-controlled) settings. -->
