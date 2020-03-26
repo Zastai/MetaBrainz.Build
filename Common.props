@@ -26,7 +26,7 @@
   <!-- C# Configuration -->
   <PropertyGroup>
     <LangVersion>8</LangVersion>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <!-- Ensure this has a default, because we use it below. -->
