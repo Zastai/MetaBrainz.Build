@@ -47,12 +47,6 @@
       <!-- NuGet warns about SemVer 2.0 features (like build identifiers). Shut that warning up. -->
       <NoWarn>$(NoWarn);NU5105</NoWarn>
     </PropertyGroup>
-    <!-- Add AppVeyor build info, if applicable. -->
-    <PropertyGroup Condition=" '$(APPVEYOR)' != '' And '$(CI)' != '' ">
-      <PackageBuildIdentifier Condition=" '$(PackageBuildIdentifier)' != '' ">$(PackageBuildIdentifier).</PackageBuildIdentifier>
-      <PackageBuildIdentifier>$(PackageBuildIdentifier)appveyor.build-$(APPVEYOR_BUILD_NUMBER)</PackageBuildIdentifier>
-      <PackageBuildIdentifier Condition=" '$(APPVEYOR_PULL_REQUEST_NUMBER)' != '' ">$(PackageBuildIdentifier).pr-$($(APPVEYOR_PULL_REQUEST_NUMBER))</PackageBuildIdentifier>
-    </PropertyGroup>
     <!-- TODO: Include Git info in build identifier (foo-1.2+master.<hash>, foo-1.2+branch.<branchname>.<hash>, foo-1.2+tag.<tagname>) . -->
     <!-- Add a timestamp as build identifier, unless told not to. -->
     <PropertyGroup Condition=" '$(NoTimestampInBuildIdentifier)' != 'true' ">
@@ -65,6 +59,19 @@
     </PropertyGroup>
     <!-- Debug Output -->
     <Message Importance="$(DebugMessageImportance)" Text="Package Properties Computed Using Version ('$(Version)'):"/>
+    <Message Importance="$(DebugMessageImportance)" Text="- PackageVersion : $(PackageVersion)"/>
+  </Target>
+
+  <Target Name="AdjustPackageVersionForAppVeyorFeed"
+          Condition=" '$(APPVEYOR)' != '' And '$(APPVEYOR_BUILD_NUMBER)' != '' "
+          BeforeTargets="GenerateNuSpec"
+          DependsOnTargets="ParseVersionSpecification;SetPackagePropertiesFromVersion">
+    <PropertyGroup>
+      <PackageVersion>$(_Version_Full)-appveyor.$(APPVEYOR_BUILD_NUMBER)</PackageVersion>
+      <PackageVersion Condition=" '$(PackageBuildIdentifier)' != '' ">$(PackageVersion)+$(PackageBuildIdentifier)</PackageVersion>
+    </PropertyGroup>
+    <!-- Debug Output -->
+    <Message Importance="$(DebugMessageImportance)" Text="Adjusted Package Version For AppVeyor Feed:"/>
     <Message Importance="$(DebugMessageImportance)" Text="- PackageVersion : $(PackageVersion)"/>
   </Target>
 
