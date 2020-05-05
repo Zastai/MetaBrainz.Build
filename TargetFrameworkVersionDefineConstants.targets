@@ -422,6 +422,15 @@
       <TargetFrameworkDefineConstant Include="NETCORE_EQ_3_1" />
       <TargetFrameworkDefineConstant Include="NETCORE_GE_3_1" />
     </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework) == 'net5.0' ">
+      <TargetFrameworkDefineConstant Include="DOTNET_EQ_5_0" />
+      <TargetFrameworkDefineConstant Include="DOTNET_GE_5_0" />
+    </ItemGroup>
+    <ItemGroup Condition=" $(TargetFramework) == 'net5.0-windows' ">
+      <TargetFrameworkDefineConstant Include="DOTNET_WINDOWS" />
+      <TargetFrameworkDefineConstant Include="DOTNET_EQ_5_0" />
+      <TargetFrameworkDefineConstant Include="DOTNET_GE_5_0" />
+    </ItemGroup>
     <PropertyGroup>
       <DefineConstants Condition=" $(DefineConstants) != '' ">$(DefineConstants);</DefineConstants>
       <DefineConstants>$(DefineConstants)@(TargetFrameworkDefineConstant)</DefineConstants>
