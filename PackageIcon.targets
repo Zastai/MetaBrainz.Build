@@ -6,7 +6,7 @@
     <DefaultPackageIcon>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', 'package-icon.png'))</DefaultPackageIcon>
   </PropertyGroup>
 
-  <Target Name="SetUpDefaultPackageIcon" BeforeTargets="Build"
+  <Target Name="_SetUpDefaultPackageIcon" BeforeTargets="Build"
           Condition=" '$(PackageIcon)' == '' And Exists('$(DefaultPackageIcon)') And '$(UseDefaultPackageIcon)' != 'false' ">
     <ItemGroup>
       <None Include="$(DefaultPackageIcon)">
