@@ -2,10 +2,12 @@
 <!-- Deal With Versions (Assembly/Package). -->
 <Project>
 
-  <!-- TODO: Try to get Git commit hash, branch name and tag name. -->
-  <!-- TODO: Error out if version is not prerelease and not on a tag (optionally strictly verifying the tag name). -->
+  <Target Name="_GetVCSInfo">
+    <!-- TODO: Try to get Git commit hash, branch name and tag name. -->
+    <!-- TODO: Error out if version is not prerelease and not on a tag (optionally strictly verifying the tag name). -->
+  </Target>
 
-  <Target Name="ParseVersionSpecification">
+  <Target Name="_ParseVersionSpecification">
     <!-- First Step: Split using a regex. -->
     <PropertyGroup>
       <_VersionRegex>^\s*((\d+[.]\d+)(?:[.]\d+)?)(-[a-z0-9]+(?:[.][a-z0-9]+)*)?\s*$</_VersionRegex>
@@ -27,7 +29,7 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="SetAssemblyInfoPropertiesFromVersion" BeforeTargets="CoreCompile" DependsOnTargets="ParseVersionSpecification">
+  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _ParseVersionSpecification">
     <!-- TODO: Include Git info in informational version: 1.2-pre (Branch '<branchname', commit <commithash>). -->
     <PropertyGroup>
       <AssemblyVersion>$(_Version_API)</AssemblyVersion>
@@ -41,7 +43,12 @@
     <Message Importance="$(DebugMessageImportance)" Text="- InformationalVersion : $(InformationalVersion)"/>
   </Target>
 
-  <Target Name="SetPackagePropertiesFromVersion" BeforeTargets="GenerateNuSpec" DependsOnTargets="ParseVersionSpecification">
+  <PropertyGroup>
+    <!-- This ensures the PackageVersion computation is run both when building a project's package and when resolving a project reference to a package reference. -->
+    <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn); _SetPackagePropertiesFromVersion</GetPackageVersionDependsOn>
+  </PropertyGroup>
+
+  <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
     <PropertyGroup>
       <PackageVersion>$(Version)</PackageVersion>
       <!-- NuGet warns about SemVer 2.0 features (like build identifiers). Shut that warning up. -->
@@ -62,10 +69,7 @@
     <Message Importance="$(DebugMessageImportance)" Text="- PackageVersion : $(PackageVersion)"/>
   </Target>
 
-  <Target Name="AdjustPackageVersionForAppVeyorFeed"
-          Condition=" '$(APPVEYOR)' != '' And '$(APPVEYOR_BUILD_NUMBER)' != '' "
-          BeforeTargets="GenerateNuSpec"
-          DependsOnTargets="ParseVersionSpecification;SetPackagePropertiesFromVersion">
+  <Target Name="_AdjustPackageVersionForAppVeyorFeed" AfterTargets="_SetPackagePropertiesFromVersion" Condition=" '$(APPVEYOR)' != '' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
     <PropertyGroup>
       <PackageVersion>$(_Version_Full)-appveyor.$(APPVEYOR_BUILD_NUMBER)</PackageVersion>
       <PackageVersion Condition=" '$(PackageBuildIdentifier)' != '' ">$(PackageVersion)+$(PackageBuildIdentifier)</PackageVersion>
