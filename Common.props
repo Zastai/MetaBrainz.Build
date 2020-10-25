@@ -77,12 +77,6 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- The building Visual Studio's major version; 0 if not available. -->
-  <PropertyGroup>
-    <BuildVSVersion>0</BuildVSVersion>
-    <BuildVSVersion Condition=" $(VisualStudioVersion) != '' ">$([System.Version]::Parse($(VisualStudioVersion)).Major)</BuildVSVersion>
-  </PropertyGroup>
-
   <!-- Some of our targets include debug output. Default it to low importance. -->
   <PropertyGroup>
     <DebugMessageImportance Condition=" '$(DebugMessageImportance)' == '' ">Low</DebugMessageImportance>
