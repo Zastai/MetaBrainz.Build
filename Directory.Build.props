@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- This file is automatically included by the build, at the start of each project (before most other properties). -->
 <Project>
-
-  <!-- Settings used by the common settings. -->
-  <PropertyGroup>
-    <PackageCopyrightYears>2xxx</PackageCopyrightYears>
-    <PackageRepositoryName>XXXX</PackageRepositoryName>
-  </PropertyGroup>
-
-  <!-- Get common settings. -->
-  <Import Project="$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'build', 'Common.props'))" />
 
   <!-- Chain to parent settings. -->
   <Import Project="$([MSBuild]::GetPathOfFileAbove('$(MSBuildThisFile)', '$(MSBuildThisFileDirectory)..'))"
           Condition=" Exists($([MSBuild]::GetPathOfFileAbove('$(MSBuildThisFile)', '$(MSBuildThisFileDirectory)..'))) "/>
 
-  <!-- Other tree-specific properties. -->
-  <PropertyGroup>
-  </PropertyGroup>
+  <Import Project="MetaBrainz.Build.Sdk\Defaults.props" />
+
+  <Import Project="MetaBrainz.Build.Sdk\TreeStructure.props" />
+
+  <Import Project="MetaBrainz.Build.Sdk\CSharp.props" />
+
+  <Import Project="MetaBrainz.Build.Sdk\NuGet.props" />
 
   <!-- Get local (user-specific, non version-controlled) settings. -->
   <Import Project="$(MSBuildThisFileName).Local$(MSBuildThisFileExtension)"

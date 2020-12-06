@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Build Support SDK for MetaBrainz C# Projects</Description>
+    <PackageCopyrightYears>2020</PackageCopyrightYears>
+    <PackageRepositoryName>MetaBrainz.Build</PackageRepositoryName>
+    <PackageTags>MetaBrainz msbuild sdk</PackageTags>
+    <Product>MetaBrainz.Build</Product>
+    <Title>MetaBrainz .NET SDK</Title>
+    <Version>1.0.0-pre</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- There's no actual code in this, but set a target anyway. -->
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ContentTargetFolders>Sdk</ContentTargetFolders>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeContent>true</IncludeContent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="MetaBrainz.snk"/>
+    <Content Include="package-icon.png"/>
+    <Content Include="*.props"/>
+    <Content Include="*.targets"/>
+  </ItemGroup>
+
+</Project>
