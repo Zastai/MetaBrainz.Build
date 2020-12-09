@@ -13,6 +13,7 @@
     <Copyright>Copyright © $(PackageCopyrightYears) Tim Van Holder. All rights reserved.</Copyright>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <RepositoryType>Github</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -26,6 +27,14 @@
 
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
 </Project>
