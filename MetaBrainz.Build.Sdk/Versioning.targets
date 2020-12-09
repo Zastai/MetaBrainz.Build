@@ -2,7 +2,7 @@
 <!-- Deal With Versions (Assembly/Package). -->
 <Project>
 
-  <Target Name="_GetVCSInfo">
+  <Target Name="_GetVCSInfo" DependsOnTargets="InitializeSourceControlInformation">
     <PropertyGroup>
       <_VCSBranchName />
       <_VCSInfo />
@@ -11,7 +11,14 @@
       <_VCSTagName />
       <_VCSPackageInfo />
     </PropertyGroup>
-    <!-- TODO: Get info from git. -->
+    <PropertyGroup>
+      <!-- Get the revision from SourceLink. -->
+      <_VCSRevision Condition=" '$(SourceControlInformationFeatureSupported)' == 'true' And '$(SourceRevisionId)' != '' ">$(SourceRevisionId)</_VCSRevision>
+    </PropertyGroup>
+    <!-- TODO: Get info from git ourselves; SourceLink only provides the revision (commit hash). -->
+    <PropertyGroup>
+      <_VCSInfo>commit $(_VCSRevision)</_VCSInfo>
+    </PropertyGroup>
   </Target>
 
   <Target Name="_ProcessVCSInfo" DependsOnTargets="_GetVCSInfo" />
@@ -22,11 +29,12 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
       <_CIBuildSuffix>appveyor.$(BUILD_NUMBER)</_CIBuildSuffix>
-      <_VCSInfo>$(_VCSInfo); AppVeyor build #$(BUILD_NUMBER)</_VCSInfo>
+      <_VCSInfo Condition=" '$(_VCSInfo)' != '' ">$(_VCSInfo); AppVeyor build #$(BUILD_NUMBER)</_VCSInfo>
     </PropertyGroup>
     <!-- If no CI applies, mark it as a local build. -->
     <PropertyGroup Condition=" '$(_CIBuildSuffix)' == '' ">
       <_CIBuildSuffix>local</_CIBuildSuffix>
+      <_VCSInfo Condition=" '$(_VCSInfo)' != '' ">$(_VCSInfo); local build</_VCSInfo>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(_CIBuildSuffix)' != '' ">
       <_VCSPackageInfo Condition=" '$(_VCSPackageInfo)' != '' ">$(_VCSPackageInfo).</_VCSPackageInfo>
@@ -35,14 +43,14 @@
   </Target>
 
   <Target Name="_ShowVCSInfo" AfterTargets="_ProcessVCSInfo">
-    <Message Condition=" '$(_VCSInfo)'         == '' " Text="No Version Control Information" />
-    <Message Condition=" '$(_VCSInfo)'         != '' " Text="Version Control Information:" />
-    <Message Condition=" '$(_VCSInfo)'         != '' " Text="- Description   : $(_VCSInfo)" />
-    <Message Condition=" '$(_VCSLocalChanges)' != '' " Text="- Local Changes : $(_VCSLocalChanges)" />
-    <Message Condition=" '$(_VCSRevision)'     != '' " Text="- Revision      : $(_VCSRevision)" />
-    <Message Condition=" '$(_VCSBranchName)'   != '' " Text="- Branch        : $(_VCSBranchName)" />
-    <Message Condition=" '$(_VCSTagName)'      != '' " Text="- Tag           : $(_VCSTagName)" />
-    <Message Condition=" '$(_VCSPackageInfo)'  != '' " Text="- Package Info  : $(_VCSPackageInfo)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSInfo)'         == '' " Text="No Version Control Information" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSInfo)'         != '' " Text="Version Control Information:" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSInfo)'         != '' " Text="- Description   : $(_VCSInfo)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSLocalChanges)' != '' " Text="- Local Changes : $(_VCSLocalChanges)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSRevision)'     != '' " Text="- Revision      : $(_VCSRevision)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSBranchName)'   != '' " Text="- Branch        : $(_VCSBranchName)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSTagName)'      != '' " Text="- Tag           : $(_VCSTagName)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSPackageInfo)'  != '' " Text="- Package Info  : $(_VCSPackageInfo)" />
   </Target>
 
   <Target Name="_ParseVersionSpecification">
