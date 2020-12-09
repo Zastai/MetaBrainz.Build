@@ -28,8 +28,8 @@
       <_CIBuildSuffix />
     </PropertyGroup>
     <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
-      <_CIBuildSuffix>appveyor.$(BUILD_NUMBER)</_CIBuildSuffix>
-      <_VCSInfo Condition=" '$(_VCSInfo)' != '' ">$(_VCSInfo); AppVeyor build #$(BUILD_NUMBER)</_VCSInfo>
+      <_CIBuildSuffix>appveyor.$(APPVEYOR_BUILD_NUMBER)</_CIBuildSuffix>
+      <_VCSInfo Condition=" '$(_VCSInfo)' != '' ">$(_VCSInfo); AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_VCSInfo>
     </PropertyGroup>
     <!-- If no CI applies, mark it as a local build. -->
     <PropertyGroup Condition=" '$(_CIBuildSuffix)' == '' ">
@@ -113,12 +113,14 @@
 
   <Target Name="_AdjustPackageVersionForAppVeyorFeed" AfterTargets="_SetPackagePropertiesFromVersion" Condition=" '$(APPVEYOR)' != '' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
     <PropertyGroup>
+      <OriginalPackageVersion>$(PackageVersion)</OriginalPackageVersion>
       <PackageVersion>$(_Version_Full)-appveyor.$(APPVEYOR_BUILD_NUMBER)</PackageVersion>
       <PackageVersion Condition=" '$(PackageBuildIdentifier)' != '' ">$(PackageVersion)+$(PackageBuildIdentifier)</PackageVersion>
     </PropertyGroup>
     <!-- Debug Output -->
     <Message Importance="$(DebugMessageImportance)" Text="Adjusted Package Version For AppVeyor Feed:"/>
     <Message Importance="$(DebugMessageImportance)" Text="- PackageVersion : $(PackageVersion)"/>
+    <Warning Text="APPVEYOR PACKAGE: [$(OriginalPackageVersion)] => [$(PackageVersion)]" />
   </Target>
 
 </Project>
