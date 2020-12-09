@@ -21,6 +21,14 @@
     <IncludeContent>true</IncludeContent>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Don't include project output (i.e. an empty assembly) or symbols. -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeSymbols>false</IncludeSymbols>
+    <!-- No code, so no dependencies (without this, NU5128 is reported). -->
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="MetaBrainz.snk"/>
     <Content Include="package-icon.png"/>
