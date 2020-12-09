@@ -3,8 +3,46 @@
 <Project>
 
   <Target Name="_GetVCSInfo">
-    <!-- TODO: Try to get Git commit hash, branch name and tag name. -->
-    <!-- TODO: Error out if version is not prerelease and not on a tag (optionally strictly verifying the tag name). -->
+    <PropertyGroup>
+      <_VCSBranchName />
+      <_VCSInfo />
+      <_VCSLocalChanges />
+      <_VCSRevision />
+      <_VCSTagName />
+      <_VCSPackageInfo />
+    </PropertyGroup>
+    <!-- TODO: Get info from git. -->
+  </Target>
+
+  <Target Name="_ProcessVCSInfo" DependsOnTargets="_GetVCSInfo" />
+
+  <Target Name="_AddContinuousIntegrationBuildInfo" AfterTargets="_GetVCSInfo" BeforeTargets="_ProcessVCSInfo">
+    <PropertyGroup>
+      <_CIBuildSuffix />
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
+      <_CIBuildSuffix>appveyor.$(BUILD_NUMBER)</_CIBuildSuffix>
+      <_VCSInfo>$(_VCSInfo); AppVeyor build #$(BUILD_NUMBER)</_VCSInfo>
+    </PropertyGroup>
+    <!-- If no CI applies, mark it as a local build. -->
+    <PropertyGroup Condition=" '$(_CIBuildSuffix)' == '' ">
+      <_CIBuildSuffix>local</_CIBuildSuffix>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(_CIBuildSuffix)' != '' ">
+      <_VCSPackageInfo Condition=" '$(_VCSPackageInfo)' != '' ">$(_VCSPackageInfo).</_VCSPackageInfo>
+      <_VCSPackageInfo>$(_VCSPackageInfo)$(_CIBuildSuffix)</_VCSPackageInfo>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_ShowVCSInfo" AfterTargets="_ProcessVCSInfo">
+    <Message Condition=" '$(_VCSInfo)'         == '' " Text="No Version Control Information" />
+    <Message Condition=" '$(_VCSInfo)'         != '' " Text="Version Control Information:" />
+    <Message Condition=" '$(_VCSInfo)'         != '' " Text="- Description   : $(_VCSInfo)" />
+    <Message Condition=" '$(_VCSLocalChanges)' != '' " Text="- Local Changes : $(_VCSLocalChanges)" />
+    <Message Condition=" '$(_VCSRevision)'     != '' " Text="- Revision      : $(_VCSRevision)" />
+    <Message Condition=" '$(_VCSBranchName)'   != '' " Text="- Branch        : $(_VCSBranchName)" />
+    <Message Condition=" '$(_VCSTagName)'      != '' " Text="- Tag           : $(_VCSTagName)" />
+    <Message Condition=" '$(_VCSPackageInfo)'  != '' " Text="- Package Info  : $(_VCSPackageInfo)" />
   </Target>
 
   <Target Name="_ParseVersionSpecification">
@@ -23,18 +61,20 @@
       <_Version_API>$([System.Version]::Parse('$(_Version_API)').ToString(2))</_Version_API>
       <_Version_Full>$([System.Version]::Parse('$(_Version_Full).0').ToString(3))</_Version_Full>
     </PropertyGroup>
-    <!-- Final Step: Update Version (Canonical Form) -->
+    <!-- Final Step: Update Version (Canonical Form). -->
     <PropertyGroup>
       <Version>$(_Version_Full)$(_Version_Pre)</Version>
     </PropertyGroup>
   </Target>
 
-  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _ParseVersionSpecification">
-    <!-- TODO: Include Git info in informational version: 1.2-pre (Branch '<branchname', commit <commithash>). -->
+  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_ProcessVCSInfo; _ParseVersionSpecification">
+    <!-- TODO: Include Git info in informational version: 1.2-pre (branch '<branchname>', commit <commithash>). -->
     <PropertyGroup>
       <AssemblyVersion>$(_Version_API)</AssemblyVersion>
       <FileVersion>$(_Version_Full)</FileVersion>
       <InformationalVersion>$(Version)</InformationalVersion>
+      <InformationalVersion Condition=" '$(_VCSInfo)' != '' ">$(AnubexVersion) ($(_VCSInfo))</InformationalVersion>
+      <InformationalVersion Condition=" '$(_VCSInfo)' == '' ">$(AnubexVersion) (no version control)</InformationalVersion>
     </PropertyGroup>
     <!-- Debug Output -->
     <Message Importance="$(DebugMessageImportance)" Text="Assembly Info Properties Computed Using Version ('$(Version)'):"/>
@@ -51,18 +91,12 @@
   <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
     <PropertyGroup>
       <PackageVersion>$(Version)</PackageVersion>
+      <PackageVersion Condition=" '$(_VCSPackageInfo)' != '' And '$(_Version_Pre)' == '' ">$(PackageVersion)+$(_VCSPackageInfo)</PackageVersion>
+      <PackageVersion Condition=" '$(_VCSPackageInfo)' != '' And '$(_Version_Pre)' != '' ">$(PackageVersion).$(_VCSPackageInfo)</PackageVersion>
+    </PropertyGroup>
+    <PropertyGroup>
       <!-- NuGet warns about SemVer 2.0 features (like build identifiers). Shut that warning up. -->
       <NoWarn>$(NoWarn);NU5105</NoWarn>
-    </PropertyGroup>
-    <!-- TODO: Include Git info in build identifier (foo-1.2+master.<hash>, foo-1.2+branch.<branchname>.<hash>, foo-1.2+tag.<tagname>) . -->
-    <!-- Add a timestamp as build identifier, unless told not to. -->
-    <PropertyGroup Condition=" '$(NoTimestampInBuildIdentifier)' != 'true' ">
-      <PackageBuildIdentifier Condition=" '$(PackageBuildIdentifier)' != '' ">$(PackageBuildIdentifier).</PackageBuildIdentifier>
-      <PackageBuildIdentifier>$(PackageBuildIdentifier)$([System.DateTime]::Now.ToString('yyyyMMdd.HHmmss.fff'))</PackageBuildIdentifier>
-    </PropertyGroup>
-    <!-- If a Build Identifier was set up above, add it. -->
-    <PropertyGroup Condition=" '$(PackageBuildIdentifier)' != '' ">
-      <PackageVersion>$(PackageVersion)+$(PackageBuildIdentifier)</PackageVersion>
     </PropertyGroup>
     <!-- Debug Output -->
     <Message Importance="$(DebugMessageImportance)" Text="Package Properties Computed Using Version ('$(Version)'):"/>
