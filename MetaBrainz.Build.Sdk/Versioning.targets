@@ -21,28 +21,7 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="_ProcessVCSInfo" DependsOnTargets="_GetVCSInfo" />
-
-  <Target Name="_AddContinuousIntegrationBuildInfo" AfterTargets="_GetVCSInfo" BeforeTargets="_ProcessVCSInfo">
-    <PropertyGroup>
-      <_CIBuildSuffix />
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
-      <_CIBuildSuffix>appveyor.$(APPVEYOR_BUILD_NUMBER)</_CIBuildSuffix>
-      <_VCSInfo Condition=" '$(_VCSInfo)' != '' ">$(_VCSInfo); AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_VCSInfo>
-    </PropertyGroup>
-    <!-- If no CI applies, mark it as a local build. -->
-    <PropertyGroup Condition=" '$(_CIBuildSuffix)' == '' ">
-      <_CIBuildSuffix>local</_CIBuildSuffix>
-      <_VCSInfo Condition=" '$(_VCSInfo)' != '' ">$(_VCSInfo); local build</_VCSInfo>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(_CIBuildSuffix)' != '' ">
-      <_VCSPackageInfo Condition=" '$(_VCSPackageInfo)' != '' ">$(_VCSPackageInfo).</_VCSPackageInfo>
-      <_VCSPackageInfo>$(_VCSPackageInfo)$(_CIBuildSuffix)</_VCSPackageInfo>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="_ShowVCSInfo" AfterTargets="_ProcessVCSInfo">
+  <Target Name="_ShowVCSInfo" AfterTargets="_GetVCSInfo">
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSInfo)'         == '' " Text="No Version Control Information" />
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSInfo)'         != '' " Text="Version Control Information:" />
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSInfo)'         != '' " Text="- Description   : $(_VCSInfo)" />
@@ -51,6 +30,25 @@
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSBranchName)'   != '' " Text="- Branch        : $(_VCSBranchName)" />
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSTagName)'      != '' " Text="- Tag           : $(_VCSTagName)" />
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSPackageInfo)'  != '' " Text="- Package Info  : $(_VCSPackageInfo)" />
+  </Target>
+
+  <Target Name="_GetCIBuildInfo">
+    <PropertyGroup>
+      <_CIBuildInfo />
+      <_CIBuildPackageInfo />
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
+      <_CIBuildInfo>AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_CIBuildInfo>
+      <_CIBuildPackageInfo>appveyor.$(APPVEYOR_BUILD_NUMBER)</_CIBuildPackageInfo>
+    </PropertyGroup>
+    <!-- FIXME: If no CI applies, should this be flagged in metadata? -->
+  </Target>
+
+  <Target Name="_ShowCIBuildInfo" AfterTargets="_GetCIBuildInfo">
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         == '' " Text="No CI Build Information" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         != '' " Text="CI Build Information:" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         != '' " Text="- Description  : $(_CIBuildInfo)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildPackageInfo)'  != '' " Text="- Package Info : $(_CIBuildPackageInfo)" />
   </Target>
 
   <Target Name="_ParseVersionSpecification">
@@ -73,19 +71,24 @@
     <PropertyGroup>
       <Version>$(_Version_Full)$(_Version_Pre)</Version>
     </PropertyGroup>
+    <Message Importance="$(DebugMessageImportance)" Text="Canonical Version: $(Version)"/>
   </Target>
 
-  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_ProcessVCSInfo; _ParseVersionSpecification">
+  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _GetCIBuildInfo; _ParseVersionSpecification">
     <!-- TODO: Include Git info in informational version: 1.2-pre (branch '<branchname>', commit <commithash>). -->
     <PropertyGroup>
       <AssemblyVersion>$(_Version_API)</AssemblyVersion>
       <FileVersion>$(_Version_Full)</FileVersion>
       <InformationalVersion>$(Version)</InformationalVersion>
-      <InformationalVersion Condition=" '$(_VCSInfo)' != '' ">$(AnubexVersion) ($(_VCSInfo))</InformationalVersion>
-      <InformationalVersion Condition=" '$(_VCSInfo)' == '' ">$(AnubexVersion) (no version control)</InformationalVersion>
+      <_ExtraInfo />
+      <_ExtraInfo Condition=" '$(_VCSInfo)' != '' And '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
+      <_ExtraInfo Condition=" '$(_VCSInfo)' != '' ">$(_ExtraInfo)$(_VCSInfo)</_ExtraInfo>
+      <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' And '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
+      <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' ">$(_ExtraInfo)$(_CIBuildInfo)</_ExtraInfo>
+      <InformationalVersion Condition=" '$(_ExtraInfo)' != '' ">$(InformationalVersion) ($(_ExtraInfo))</InformationalVersion>
     </PropertyGroup>
     <!-- Debug Output -->
-    <Message Importance="$(DebugMessageImportance)" Text="Assembly Info Properties Computed Using Version ('$(Version)'):"/>
+    <Message Importance="$(DebugMessageImportance)" Text="Assembly Info Properties:"/>
     <Message Importance="$(DebugMessageImportance)" Text="- AssemblyVersion      : $(AssemblyVersion)"/>
     <Message Importance="$(DebugMessageImportance)" Text="- FileVersion          : $(FileVersion)"/>
     <Message Importance="$(DebugMessageImportance)" Text="- InformationalVersion : $(InformationalVersion)"/>
@@ -96,31 +99,20 @@
     <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn); _SetPackagePropertiesFromVersion</GetPackageVersionDependsOn>
   </PropertyGroup>
 
-  <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
+  <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _GetCIBuildInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
     <PropertyGroup>
+      <_ExtraPackageInfo />
+      <_ExtraPackageInfo Condition=" '$(_VCSPackageInfo)' != '' And '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo).</_ExtraPackageInfo>
+      <_ExtraPackageInfo Condition=" '$(_VCSPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_VCSPackageInfo)</_ExtraPackageInfo>
+      <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' != '' And '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo); </_ExtraPackageInfo>
+      <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_CIBuildPackageInfo)</_ExtraPackageInfo>
       <PackageVersion>$(Version)</PackageVersion>
-      <PackageVersion Condition=" '$(_VCSPackageInfo)' != '' And '$(_Version_Pre)' == '' ">$(PackageVersion)+$(_VCSPackageInfo)</PackageVersion>
-      <PackageVersion Condition=" '$(_VCSPackageInfo)' != '' And '$(_Version_Pre)' != '' ">$(PackageVersion).$(_VCSPackageInfo)</PackageVersion>
-    </PropertyGroup>
-    <PropertyGroup>
-      <!-- NuGet warns about SemVer 2.0 features (like build identifiers). Shut that warning up. -->
-      <NoWarn>$(NoWarn);NU5105</NoWarn>
+      <PackageVersion Condition=" '$(_ExtraPackageInfo)' != '' And !$(_Version_Pre.Contains('-')) ">$(PackageVersion)+$(_ExtraPackageInfo)</PackageVersion>
+      <PackageVersion Condition=" '$(_ExtraPackageInfo)' != '' And  $(_Version_Pre.Contains('-')) ">$(PackageVersion).$(_ExtraPackageInfo)</PackageVersion>
     </PropertyGroup>
     <!-- Debug Output -->
-    <Message Importance="$(DebugMessageImportance)" Text="Package Properties Computed Using Version ('$(Version)'):"/>
+    <Message Importance="$(DebugMessageImportance)" Text="Package Properties:"/>
     <Message Importance="$(DebugMessageImportance)" Text="- PackageVersion : $(PackageVersion)"/>
-  </Target>
-
-  <Target Name="_AdjustPackageVersionForAppVeyorFeed" AfterTargets="_SetPackagePropertiesFromVersion" Condition=" '$(APPVEYOR)' != '' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
-    <PropertyGroup>
-      <OriginalPackageVersion>$(PackageVersion)</OriginalPackageVersion>
-      <PackageVersion>$(_Version_Full)-appveyor.$(APPVEYOR_BUILD_NUMBER)</PackageVersion>
-      <PackageVersion Condition=" '$(PackageBuildIdentifier)' != '' ">$(PackageVersion)+$(PackageBuildIdentifier)</PackageVersion>
-    </PropertyGroup>
-    <!-- Debug Output -->
-    <Message Importance="$(DebugMessageImportance)" Text="Adjusted Package Version For AppVeyor Feed:"/>
-    <Message Importance="$(DebugMessageImportance)" Text="- PackageVersion : $(PackageVersion)"/>
-    <Warning Text="APPVEYOR PACKAGE: [$(OriginalPackageVersion)] => [$(PackageVersion)]" />
   </Target>
 
 </Project>
