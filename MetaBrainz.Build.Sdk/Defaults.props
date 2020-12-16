@@ -7,6 +7,19 @@
     <Platform      Condition=" '$(Platform)'      == '' ">AnyCPU</Platform>
   </PropertyGroup>
 
+  <!-- Set up defaults for the frameworks to target. -->
+  <PropertyGroup>
+    <TargetFrameworks>
+      <!-- Target the .NET current release. -->
+      net5.0;
+      <!-- Target the .NET LTS releases. -->
+      netcoreapp3.1;
+      netcoreapp2.1;
+      <!-- Target the .NET Framework too. -->
+      net472
+    </TargetFrameworks>
+  </PropertyGroup>
+
   <!-- Set up the importance for debug messages issued by SDK targets. -->
   <PropertyGroup>
     <DebugMessageImportance Condition=" '$(DebugMessageImportance)' == '' ">Low</DebugMessageImportance>
