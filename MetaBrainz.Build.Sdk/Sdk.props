@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <Import Project="Defaults.props" />
+
+  <Import Project="TreeStructure.props" />
+
+  <Import Project="CSharp.props" />
+
+  <Import Project="NuGet.props" />
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+</Project>

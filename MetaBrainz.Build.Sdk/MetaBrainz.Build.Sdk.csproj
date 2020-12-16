@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Build Support SDK for MetaBrainz C# Projects</Description>
+    <PackageCopyrightYears>2020</PackageCopyrightYears>
+    <PackageRepositoryName>MetaBrainz.Build</PackageRepositoryName>
+    <PackageTags>MetaBrainz msbuild sdk</PackageTags>
+    <Product>MetaBrainz.Build</Product>
+    <Title>MetaBrainz .NET SDK</Title>
+    <Version>1.0.0-pre</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- There's no actual code in this, but set a target anyway. -->
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ContentTargetFolders>Sdk</ContentTargetFolders>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeContent>true</IncludeContent>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Don't include project output (i.e. an empty assembly) or symbols. -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeSymbols>false</IncludeSymbols>
+    <!-- No code, so no dependencies (without this, NU5128 is reported). -->
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="MetaBrainz.snk"/>
+    <Content Include="package-icon.png"/>
+    <Content Include="*.props"/>
+    <Content Include="*.targets"/>
+  </ItemGroup>
+
+</Project>

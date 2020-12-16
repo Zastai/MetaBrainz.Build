@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <PropertyGroup>
+    <PackageCopyrightYears Condition=" '$(PackageCopyrightYears)' == '' ">$([System.DateTime]::UtcNow.Year)</PackageCopyrightYears>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(PackageRepositoryName)' != '' ">
+    <Product Condition=" '$(Product)' == '' ">MetaBrainz.$(PackageRepositoryName)</Product>
+    <RepositoryUrl Condition=" '$(RepositoryUrl)' == '' ">https://github.com/Zastai/$(PackageRepositoryName)</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(PackageProjectUrl)' == '' And '$(RepositoryUrl)' != '' And '$(DefaultProjectUrlToREADME)' != 'false' ">
+    <PackageProjectUrl>$(RepositoryUrl)/blob/master/README.md</PackageProjectUrl>
+  </PropertyGroup>
+
+  <!-- If the project is packable and does not specify a package icon, use the default icon. -->
+  <Target Name="_SetUpDefaultPackageIcon" BeforeTargets="Build"
+          Condition=" '$(IsPackable)' != 'False' And '$(PackageIcon)' == '' And Exists('$(MetaBrainzDefaultPackageIcon)') And '$(UseDefaultPackageIcon)' != 'false' ">
+    <ItemGroup>
+      <None Include="$(MetaBrainzDefaultPackageIcon)">
+        <Pack>true</Pack>
+        <PackagePath/>
+      </None>
+    </ItemGroup>
+    <PropertyGroup>
+      <PackageIcon>$([System.IO.Path]::GetFileName('$(MetaBrainzDefaultPackageIcon)'))</PackageIcon>
+    </PropertyGroup>
+  </Target>
+
+</Project>

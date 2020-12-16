@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Standard MSBuild Targets. -->
 <Project>
 
-  <Import Project="PackageIcon.targets" />
+  <Import Project="NuGet.targets" />
+
   <Import Project="Versioning.targets" />
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
 </Project>

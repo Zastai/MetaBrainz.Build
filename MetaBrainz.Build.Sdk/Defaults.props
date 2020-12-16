@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <!-- Set up defaults for configuration and platform. -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform      Condition=" '$(Platform)'      == '' ">AnyCPU</Platform>
+  </PropertyGroup>
+
+  <!-- Set up the importance for debug messages issued by SDK targets. -->
+  <PropertyGroup>
+    <DebugMessageImportance Condition=" '$(DebugMessageImportance)' == '' ">Low</DebugMessageImportance>
+  </PropertyGroup>
+
+</Project>

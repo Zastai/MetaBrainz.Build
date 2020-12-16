@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <!-- Use README.md to identify the project root. -->
+  <PropertyGroup>
+    <MetaBrainzProjectRoot>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildProjectDirectory)', 'README.md'))))</MetaBrainzProjectRoot>
+  </PropertyGroup>
+
+  <!-- Set up the build output locations (only if the project root was found). -->
+  <PropertyGroup Condition=" Exists('$(MetaBrainzProjectRoot)') ">
+    <!-- Determine the subdirectory to use. This also handles the temp project copies used by the WPF tooling. -->
+    <BuildProjectSubDir>$([System.Text.RegularExpressions.Regex]::Match('$(MSBuildProjectName)', '(.*)_.{8}_wpftmp$').Groups[1].Value)</BuildProjectSubDir>
+    <BuildProjectSubDir Condition=" '$(BuildProjectSubDir)' == '' ">$(MSBuildProjectName)</BuildProjectSubDir>
+    <!-- The build output root is an 'output' folder under the project root. -->
+    <BuildOutputRoot>$([MSBuild]::NormalizeDirectory('$(MetaBrainzProjectRoot)', 'output'))</BuildOutputRoot>
+    <!-- Set up the main locations below the build output root. -->
+    <MainOutputRoot>$([MSBuild]::NormalizeDirectory('$(BuildOutputRoot)', 'bin', '$(BuildProjectSubDir)'))</MainOutputRoot>
+    <IntermediateRoot>$([MSBuild]::NormalizeDirectory('$(BuildOutputRoot)', 'obj', '$(BuildProjectSubDir)'))</IntermediateRoot>
+    <PackageOutputPath>$([MSBuild]::NormalizeDirectory('$(BuildOutputRoot)', 'package', '$(Configuration)'))</PackageOutputPath>
+    <TestResultsRoot>$([MSBuild]::NormalizeDirectory('$(BuildOutputRoot)', 'test-results', '$(BuildProjectSubDir)'))</TestResultsRoot>
+    <!-- Finally, set up any further derived properties. -->
+    <BaseIntermediateOutputPath>$(IntermediateRoot)</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$([MSBuild]::NormalizeDirectory('$(IntermediateRoot)', '$(Configuration)'))</IntermediateOutputPath>
+    <OutputPath>$([MSBuild]::NormalizeDirectory('$(MainOutputRoot)', '$(Configuration)'))</OutputPath>
+  </PropertyGroup>
+
+</Project>

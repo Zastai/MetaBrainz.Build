@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <PropertyGroup>
+    <MetaBrainzDefaultPackageIcon />
+    <MetaBrainzDefaultPackageIcon Condition=" Exists('$(MetaBrainzProjectRoot)') And Exists('$(MetaBrainzProjectRoot)\package-icon.png') ">$(MetaBrainzProjectRoot)\package-icon.png</MetaBrainzDefaultPackageIcon>
+    <MetaBrainzDefaultPackageIcon Condition=" '$(MetaBrainzDefaultPackageIcon)' == '' ">$(MSBuildThisFileDirectory)package-icon.png</MetaBrainzDefaultPackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Zastai</Authors>
+    <Company>MetaBrainz</Company>
+    <Copyright>Copyright © $(PackageCopyrightYears) Tim Van Holder. All rights reserved.</Copyright>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <RepositoryType>Github</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+</Project>
