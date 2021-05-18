@@ -10,12 +10,11 @@
   <!-- Set up defaults for the frameworks to target. -->
   <PropertyGroup>
     <TargetFrameworks>
-      <!-- Target the .NET current release. -->
-      net5.0;
-      <!-- Target the .NET LTS releases. -->
-      netcoreapp3.1;
-      netcoreapp2.1;
-      <!-- Target the .NET Framework too. -->
+      <!-- Target .NET Standard 2.1. This provides support for .NET Core 3.0 or later and .NET 5 or later. -->
+      netstandard2.1;
+      <!-- Also target .NET Standard 2.0. This provides support for .NET Core 2.0 or later. -->
+      netstandard2.0;
+      <!-- Target the .NET Framework too; should not be required but can be useful for compatibility. -->
       net472
     </TargetFrameworks>
   </PropertyGroup>
