@@ -11,7 +11,7 @@
     <Authors>Zastai</Authors>
     <Company>MetaBrainz</Company>
     <Copyright>Copyright © $(PackageCopyrightYears) Tim Van Holder. All rights reserved.</Copyright>
-    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>Github</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
