@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <Description>Build Support SDK for MetaBrainz C# Projects</Description>
-    <PackageCopyrightYears>2020</PackageCopyrightYears>
+    <PackageCopyrightYears>2020, 2021</PackageCopyrightYears>
     <PackageRepositoryName>MetaBrainz.Build</PackageRepositoryName>
     <PackageTags>MetaBrainz msbuild sdk</PackageTags>
     <Product>MetaBrainz.Build</Product>
     <Title>MetaBrainz .NET SDK</Title>
-    <Version>1.0.1-pre</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup>
