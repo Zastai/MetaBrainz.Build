@@ -24,3 +24,14 @@ This consists of:
 
 At some point, this could be extended to include MSBuild tasks, should they
 become useful; in the meantime, there is no code present.
+
+## Release Notes
+
+### v1.0.1 (not yet released)
+
+- Switched the package license to MIT.
+- Added the MIT license file.
+
+### v1.0.1 (2020-12-21)
+
+Initial release.
