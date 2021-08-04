@@ -27,6 +27,8 @@ become useful; in the meantime, there is no code present.
 
 ## Release Notes
 
+### v1.0.2 (not yet released)
+
 ### v1.0.1 (2021-08-05)
 
 - Switched the package license to MIT.
