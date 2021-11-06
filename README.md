@@ -34,6 +34,6 @@ become useful; in the meantime, there is no code present.
 - Switched the package license to MIT.
 - Added the MIT license file.
 
-### v1.0.1 (2020-12-21)
+### v1.0.0 (2020-12-21)
 
 Initial release.
