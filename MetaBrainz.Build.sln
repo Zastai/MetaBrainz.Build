@@ -14,6 +14,7 @@ ProjectSection(SolutionItems) = preProject
 	Directory.Packages.props = Directory.Packages.props
 	LICENSE.md = LICENSE.md
 	README.md = README.md
+	build-package.ps1 = build-package.ps1
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Initial Project Contents", "Initial Project Contents", "{274B380A-F4E4-4CC8-9D12-BA867ED3B46E}"
@@ -22,6 +23,7 @@ ProjectSection(SolutionItems) = preProject
 	initial-project-contents\.gitattributes = initial-project-contents\.gitattributes
 	initial-project-contents\.gitignore = initial-project-contents\.gitignore
 	initial-project-contents\appveyor.yml = initial-project-contents\appveyor.yml
+	initial-project-contents\build-package.ps1 = initial-project-contents\build-package.ps1
 EndProjectSection
 EndProject
 Global
