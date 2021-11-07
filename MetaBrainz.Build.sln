@@ -5,6 +5,16 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaBrainz.Build.Sdk", "MetaBrainz.Build.Sdk\MetaBrainz.Build.Sdk.csproj", "{20B49106-BE37-4358-8BBB-7DDD6443B0AA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{C9D2F120-3CEA-499A-B5BD-DFF6684631A4}"
+ProjectSection(SolutionItems) = preProject
+	appveyor.yml = appveyor.yml
+	Directory.Build.props = Directory.Build.props
+	Directory.Build.targets = Directory.Build.targets
+	Directory.Packages.props = Directory.Packages.props
+	LICENSE.md = LICENSE.md
+	README.md = README.md
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
