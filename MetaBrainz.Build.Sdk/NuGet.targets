@@ -25,7 +25,7 @@
   
   <!-- If the project is packable, set up the package icon, ReadMe and license if not already done. -->
 
-  <Target Name="_SetUpDefaultPackageIcon" BeforeTargets="Build"
+  <Target Name="_MaybeSetPackageIcon"
           Condition=" '$(IsPackable)' != 'False' And '$(PackageIcon)' == '' And Exists('$(MetaBrainzDefaultPackageIcon)') And '$(UseDefaultPackageIcon)' != 'false' ">
     <ItemGroup>
       <None Include="$(MetaBrainzDefaultPackageIcon)">
@@ -38,7 +38,7 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="_SetUpPackageLicense" BeforeTargets="Build"
+  <Target Name="_MaybeSetPackageLicense"
           Condition=" '$(IsPackable)' != 'False' And '$(IncludeLicenseInPackage)' != 'false' ">
     <PropertyGroup>
       <_LicenseIncluded>false</_LicenseIncluded>
@@ -65,7 +65,7 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="_SetUpPackageReadMe" BeforeTargets="Build"
+  <Target Name="_MaybeSetPackageReadMe" BeforeTargets="Build"
           Condition=" '$(IsPackable)' != 'False' And '$(PackageReadMeFile)' == '' And '$(IncludeReadMeInPackage)' != 'false' ">
     <!-- Check for a project-level README file. -->
     <ItemGroup Condition=" '$(PackageReadMeFile)' == '' And Exists('README.md') ">
@@ -98,5 +98,10 @@
       <PackageReadMeFile>README.md</PackageReadMeFile>
     </PropertyGroup>
   </Target>
+
+  <!-- Using BeforeTargets="Pack" for these targets does not work when using 'dotnet pack', but this does. -->
+  <PropertyGroup>
+    <BeforePack>_MaybeSetPackageIcon;_MaybeSetPackageLicense;_MaybeSetPackageReadMe;$(BeforePack)</BeforePack>
+  </PropertyGroup>
 
 </Project>
