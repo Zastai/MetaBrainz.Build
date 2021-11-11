@@ -17,7 +17,6 @@
 
   <PropertyGroup>
     <ContentTargetFolders>Sdk</ContentTargetFolders>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeContent>true</IncludeContent>
   </PropertyGroup>
 
