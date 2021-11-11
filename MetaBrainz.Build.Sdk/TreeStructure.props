@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
 
-  <!-- Use README.md to identify the project root. -->
+  <!-- Use the build script to identify the project root. -->
   <PropertyGroup>
-    <MetaBrainzProjectRoot>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildProjectDirectory)', 'README.md'))))</MetaBrainzProjectRoot>
+    <MetaBrainzProjectRootTriggerFile>build-package.ps1</MetaBrainzProjectRootTriggerFile>
+    <MetaBrainzProjectRoot>$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildProjectDirectory)', '$(MetaBrainzProjectRootTriggerFile)'))</MetaBrainzProjectRoot>
+    <MetaBrainzProjectRoot>$([MSBuild]::EnsureTrailingSlash('$(MetaBrainzProjectRoot)'))</MetaBrainzProjectRoot>
   </PropertyGroup>
 
   <!-- Set up the build output locations (only if the project root was found). -->
