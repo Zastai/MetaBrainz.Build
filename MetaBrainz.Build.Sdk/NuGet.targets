@@ -39,24 +39,62 @@
   </Target>
 
   <Target Name="_SetUpPackageLicense" BeforeTargets="Build"
-          Condition=" '$(IsPackable)' != 'False' And Exists('$(MetaBrainzProjectRoot)LICENSE.md') And '$(IncludeLicenseInPackage)' != 'false' ">
-    <ItemGroup>
+          Condition=" '$(IsPackable)' != 'False' And '$(IncludeLicenseInPackage)' != 'false' ">
+    <PropertyGroup>
+      <_LicenseIncluded>false</_LicenseIncluded>
+    </PropertyGroup>
+    <!-- Check for a project-level license file. -->
+    <ItemGroup Condition=" $(_LicenseIncluded) != 'true' And Exists('LICENSE.md') ">
+      <None Include="LICENSE.md">
+        <Pack>true</Pack>
+        <PackagePath/>
+      </None>
+    </ItemGroup>
+    <PropertyGroup Condition=" $(_LicenseIncluded) != 'true' And Exists('LICENSE.md') ">
+      <_LicenseIncluded>true</_LicenseIncluded>
+    </PropertyGroup>
+    <!-- Check for a solution-level license file. -->
+    <ItemGroup Condition=" $(_LicenseIncluded) != 'true' And Exists('$(MetaBrainzProjectRoot)LICENSE.md') ">
       <None Include="$(MetaBrainzProjectRoot)LICENSE.md">
         <Pack>true</Pack>
         <PackagePath/>
       </None>
     </ItemGroup>
+    <PropertyGroup Condition=" $(_LicenseIncluded) != 'true' And Exists('$(MetaBrainzProjectRoot)LICENSE.md') ">
+      <_LicenseIncluded>true</_LicenseIncluded>
+    </PropertyGroup>
   </Target>
 
   <Target Name="_SetUpPackageReadMe" BeforeTargets="Build"
-          Condition=" '$(IsPackable)' != 'False' And '$(PackageReadMeFile)' == '' And Exists('$(MetaBrainzProjectRoot)README.md') And '$(IncludeReadMeInPackage)' != 'false' ">
-    <ItemGroup>
-      <None Include="$(MetaBrainzProjectRoot)README.md">
+          Condition=" '$(IsPackable)' != 'False' And '$(PackageReadMeFile)' == '' And '$(IncludeReadMeInPackage)' != 'false' ">
+    <!-- Check for a project-level README file. -->
+    <ItemGroup Condition=" '$(PackageReadMeFile)' == '' And Exists('README.md') ">
+      <None Include="README.md">
         <Pack>true</Pack>
-        <PackagePath/>
+        <PackagePath>README.md</PackagePath>
       </None>
     </ItemGroup>
-    <PropertyGroup>
+    <PropertyGroup Condition=" '$(PackageReadMeFile)' == '' And Exists('README.md') ">
+      <PackageReadMeFile>README.md</PackageReadMeFile>
+    </PropertyGroup>
+    <!-- Check for a solution-level package README file. -->
+    <ItemGroup Condition=" '$(PackageReadMeFile)' == '' And Exists('$(MetaBrainzProjectRoot)README.Package.md') ">
+      <None Include="$(MetaBrainzProjectRoot)README.Package.md">
+        <Pack>true</Pack>
+        <PackagePath>README.md</PackagePath>
+      </None>
+    </ItemGroup>
+    <PropertyGroup Condition=" '$(PackageReadMeFile)' == '' And Exists('$(MetaBrainzProjectRoot)README.Package.md') ">
+      <PackageReadMeFile>README.md</PackageReadMeFile>
+    </PropertyGroup>
+    <!-- Fall back on the solution-level README file. -->
+    <ItemGroup Condition=" '$(PackageReadMeFile)' == '' And Exists('$(MetaBrainzProjectRoot)README.md') ">
+      <None Include="$(MetaBrainzProjectRoot)README.md">
+        <Pack>true</Pack>
+        <PackagePath>README.md</PackagePath>
+      </None>
+    </ItemGroup>
+    <PropertyGroup Condition=" '$(PackageReadMeFile)' == '' And Exists('$(MetaBrainzProjectRoot)README.md') ">
       <PackageReadMeFile>README.md</PackageReadMeFile>
     </PropertyGroup>
   </Target>
