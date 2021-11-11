@@ -8,6 +8,8 @@
 
   <Import Project="MetaBrainz.Build.Sdk\NuGet.targets" />
 
+  <Import Project="MetaBrainz.Build.Sdk\TreeStructure.targets" />
+
   <Import Project="MetaBrainz.Build.Sdk\Versioning.targets" />
         
   <!-- Get local (user-specific, non-version-controlled) targets. -->

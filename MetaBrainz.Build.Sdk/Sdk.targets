@@ -3,6 +3,8 @@
 
   <Import Project="NuGet.targets" />
 
+  <Import Project="TreeStructure.targets" />
+
   <Import Project="Versioning.targets" />
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />

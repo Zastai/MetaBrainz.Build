@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <!-- 'Restore' does not work reliably in BeforeTargets, but 'CollectPackageReferences' triggers nicely. -->
+  <Target Name="_VerifyRootFolder" BeforeTargets="CollectPackageReferences">
+    <Error Text="Could not determine the root folder for this build; is a '$(MetaBrainzProjectRootTriggerFile)' file present?"
+           Condition=" '$(MetaBrainzProjectRoot)' == '' " />
+    <!-- This should be impossible. -->
+    <Error Text="The root folder for this build was determined to be '$(MetaBrainzProjectRoot)', but it does not exist."
+           Condition=" !Exists('$(MetaBrainzProjectRoot)') " />
+  </Target>
+
+</Project>
