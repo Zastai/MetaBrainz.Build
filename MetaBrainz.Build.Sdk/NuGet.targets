@@ -44,23 +44,23 @@
       <_LicenseIncluded>false</_LicenseIncluded>
     </PropertyGroup>
     <!-- Check for a project-level license file. -->
-    <ItemGroup Condition=" $(_LicenseIncluded) != 'true' And Exists('LICENSE.md') ">
+    <ItemGroup Condition=" '$(_LicenseIncluded)' != 'true' And Exists('LICENSE.md') ">
       <None Include="LICENSE.md">
         <Pack>true</Pack>
-        <PackagePath/>
+        <PackagePath>LICENSE.md</PackagePath>
       </None>
     </ItemGroup>
-    <PropertyGroup Condition=" $(_LicenseIncluded) != 'true' And Exists('LICENSE.md') ">
+    <PropertyGroup Condition=" '$(_LicenseIncluded)' != 'true' And Exists('LICENSE.md') ">
       <_LicenseIncluded>true</_LicenseIncluded>
     </PropertyGroup>
     <!-- Check for a solution-level license file. -->
-    <ItemGroup Condition=" $(_LicenseIncluded) != 'true' And Exists('$(MetaBrainzProjectRoot)LICENSE.md') ">
+    <ItemGroup Condition=" '$(_LicenseIncluded)' != 'true' And Exists('$(MetaBrainzProjectRoot)LICENSE.md') ">
       <None Include="$(MetaBrainzProjectRoot)LICENSE.md">
         <Pack>true</Pack>
-        <PackagePath/>
+        <PackagePath>LICENSE.md</PackagePath>
       </None>
     </ItemGroup>
-    <PropertyGroup Condition=" $(_LicenseIncluded) != 'true' And Exists('$(MetaBrainzProjectRoot)LICENSE.md') ">
+    <PropertyGroup Condition=" '$(_LicenseIncluded)' != 'true' And Exists('$(MetaBrainzProjectRoot)LICENSE.md') ">
       <_LicenseIncluded>true</_LicenseIncluded>
     </PropertyGroup>
   </Target>
