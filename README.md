@@ -27,6 +27,8 @@ they become useful; in the meantime, there is no code present.
 
 ## Release Notes
 
+### v2.0.1 (not yet released)
+
 ### v2.0.0 (2021-11-11)
 
 - `PackageRepositoryName` now defaults to `$(PackageId)`.
