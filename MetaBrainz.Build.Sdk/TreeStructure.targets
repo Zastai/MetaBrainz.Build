@@ -8,6 +8,13 @@
     <!-- This should be impossible. -->
     <Error Text="The root folder for this build was determined to be '$(MetaBrainzProjectRoot)', but it does not exist."
            Condition=" !Exists('$(MetaBrainzProjectRoot)') " />
+    <!-- The build root is required to contain a few specific files. -->
+    <ItemGroup>
+      <_RequiredMetaBrainzProjectRootContents Include="LICENSE.md" />
+      <_RequiredMetaBrainzProjectRootContents Include="README.md" />
+    </ItemGroup>
+    <Error Text="The root folder for this build was determined to be '$(MetaBrainzProjectRoot)', but it does not contain a '%(_RequiredMetaBrainzProjectRootContents.Identity)' file."
+           Condition=" !Exists('$(MetaBrainzProjectRoot)%(_RequiredMetaBrainzProjectRootContents.Identity)') " />
   </Target>
 
 </Project>
