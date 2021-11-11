@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
 
+  <!-- Set Up Copyright Info -->
+  
   <PropertyGroup>
     <PackageCopyrightYears Condition=" '$(PackageCopyrightYears)' == '' ">$([System.DateTime]::UtcNow.Year)</PackageCopyrightYears>
+    <Copyright Condition=" '$(Copyright)' == '' ">Copyright © $(PackageCopyrightYears) Tim Van Holder. All rights reserved.</Copyright>
+  </PropertyGroup>
+
+  <!-- Set Up Package Info -->
+  
+  <PropertyGroup>
     <PackageRepositoryName Condition=" '$(PackageRepositoryName)' == '' ">$(PackageId)</PackageRepositoryName>
   </PropertyGroup>
 
