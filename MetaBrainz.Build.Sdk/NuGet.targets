@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(PackageProjectUrl)' == '' And '$(RepositoryUrl)' != '' And '$(DefaultProjectUrlToReadMe)' != 'false' ">
-    <PackageProjectUrl>$(RepositoryUrl)/blob/master/README.md</PackageProjectUrl>
+    <PackageProjectUrl>$(RepositoryUrl)/blob/main/README.md</PackageProjectUrl>
   </PropertyGroup>
   
   <!-- If the project is packable, set up the package icon, ReadMe and license if not already done. -->
