@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Authors>Zastai</Authors>
     <Company>MetaBrainz</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>Github</RepositoryType>

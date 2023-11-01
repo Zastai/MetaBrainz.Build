@@ -5,7 +5,8 @@
   
   <PropertyGroup>
     <PackageCopyrightYears Condition=" '$(PackageCopyrightYears)' == '' ">$([System.DateTime]::UtcNow.Year)</PackageCopyrightYears>
-    <Copyright Condition=" '$(Copyright)' == '' ">Copyright © $(PackageCopyrightYears) Tim Van Holder. All rights reserved.</Copyright>
+    <PackageCopyrightOwners Condition=" '$(PackageCopyrightOwners)' == '' ">$(Authors)</PackageCopyrightOwners>
+    <Copyright Condition=" '$(Copyright)' == '' ">Copyright © $(PackageCopyrightYears) $(PackageCopyrightOwners). All rights reserved.</Copyright>
   </PropertyGroup>
 
   <!-- Set Up Package Info -->

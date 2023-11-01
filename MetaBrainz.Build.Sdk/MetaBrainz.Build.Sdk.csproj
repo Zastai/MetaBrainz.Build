@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Authors>Zastai</Authors>
     <Description>Build Support SDK for MetaBrainz C# Projects</Description>
     <DevelopmentDependency>true</DevelopmentDependency>
+    <PackageCopyrightOwners>Tim Van Holder</PackageCopyrightOwners>
     <PackageCopyrightYears>2020, 2021, 2022, 2023</PackageCopyrightYears>
     <PackageRepositoryName>MetaBrainz.Build</PackageRepositoryName>
     <PackageTags>MetaBrainz msbuild sdk</PackageTags>
