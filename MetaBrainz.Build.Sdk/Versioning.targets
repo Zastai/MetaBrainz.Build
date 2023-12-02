@@ -53,9 +53,11 @@
       <_CIBuildPackageInfo>appveyor.$(APPVEYOR_BUILD_NUMBER)</_CIBuildPackageInfo>
     </PropertyGroup>
     <!-- CI: GitHub Actions -->
-    <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' And '$(GITHUB_RUN_ATTEMPT)' != '' ">
-      <_CIBuildInfo>GitHub build #$(GITHUB_RUN_ATTEMPT)</_CIBuildInfo>
-      <_CIBuildPackageInfo>github.$(GITHUB_RUN_ATTEMPT)</_CIBuildPackageInfo>
+    <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' And '$(GITHUB_RUN_NUMBER)' != '' ">
+      <_CIBuildInfo>GitHub build #$(GITHUB_RUN_NUMBER)</_CIBuildInfo>
+      <_CIBuildInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' And '$(GITHUB_RUN_ATTEMPT)' != '1' ">$(_CIBuildInfo), attempt #$(GITHUB_RUN_ATTEMPT)</_CIBuildInfo>
+      <_CIBuildPackageInfo>github.$(GITHUB_RUN_NUMBER)</_CIBuildPackageInfo>
+      <_CIBuildPackageInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' ">$(_CIBuildPackageInfo).$(GITHUB_RUN_ATTEMPT)</_CIBuildPackageInfo>
     </PropertyGroup>
     <!-- FIXME: If no CI applies, should this be flagged in metadata? -->
   </Target>
