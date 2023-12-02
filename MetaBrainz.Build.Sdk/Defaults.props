@@ -9,16 +9,8 @@
 
   <!-- Set up defaults for the frameworks to target. -->
   <PropertyGroup>
-    <TargetFrameworks>
-      <!-- Target .NET 6.0. This provides support for .NET 6.0 or later. -->
-      net6.0;
-      <!-- Target .NET Standard 2.1. This provides support for .NET Core 3.0 or later. -->
-      netstandard2.1;
-      <!-- Also target .NET Standard 2.0. This provides support for .NET Core 2.0 or later, and .NET Framework 4.7.2. -->
-      netstandard2.0;
-      <!-- Target .NET Framework 4.8 too. -->
-      net48
-    </TargetFrameworks>
+      <!-- We target the active LTS versions of .NET. No more .NET Core or .NET Framework. -->
+      <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <!-- Set up the importance for debug messages issued by SDK targets. -->
