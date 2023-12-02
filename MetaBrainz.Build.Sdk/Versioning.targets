@@ -7,6 +7,7 @@
       <_VCSBranchName />
       <_VCSInfo />
       <_VCSLocalChanges />
+      <_VCSPullRequest />
       <_VCSRevision />
       <_VCSTagName />
       <_VCSPackageInfo />
@@ -16,8 +17,16 @@
       <_VCSRevision Condition=" '$(SourceControlInformationFeatureSupported)' == 'true' And '$(SourceRevisionId)' != '' ">$(SourceRevisionId)</_VCSRevision>
     </PropertyGroup>
     <!-- TODO: Get info from git ourselves; SourceLink only provides the revision (commit hash). -->
+    <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' ">
+      <!-- TODO: Get PR info (PR number + base branch). -->
+      <_VCSBranchName Condition=" '$(GITHUB_REF_TYPE)' == 'branch' And '$(_VCSBranchName)' == '' ">$(GITHUB_REF_NAME)</_VCSBranchName>
+      <_VCSTagName Condition=" '$(GITHUB_REF_TYPE)' == 'tag' And '$(_VCSTagName)' == '' ">$(GITHUB_REF_NAME)</_VCSTagName>
+    </PropertyGroup>
     <PropertyGroup>
-      <_VCSInfo>commit $(_VCSRevision)</_VCSInfo>
+      <_VCSInfo Condition=" '$(_VCSTagName)' != '' ">tag $(_VCSTagName)</_VCSInfo>
+      <_VCSInfo Condition=" '$(_VCSTagName)' == '' ">commit $(_VCSRevision)</_VCSInfo>
+      <_VCSInfo Condition=" '$(_VCSBranchName)' != '' ">$(_VCSInfo) on $(_VCSBranchName)</_VCSInfo>
+      <_VCSInfo Condition=" '$(_VCSPullRequest)' != '' ">$(_VCSInfo) for PR #$(_VCSPullRequest)</_VCSInfo>
     </PropertyGroup>
   </Target>
 
@@ -28,6 +37,7 @@
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSLocalChanges)' != '' " Text="- Local Changes : $(_VCSLocalChanges)" />
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSRevision)'     != '' " Text="- Revision      : $(_VCSRevision)" />
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSBranchName)'   != '' " Text="- Branch        : $(_VCSBranchName)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSPullRequest)'  != '' " Text="- Pull Request  : $(_VCSPullRequest)" />
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSTagName)'      != '' " Text="- Tag           : $(_VCSTagName)" />
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSPackageInfo)'  != '' " Text="- Package Info  : $(_VCSPackageInfo)" />
   </Target>
@@ -37,9 +47,15 @@
       <_CIBuildInfo />
       <_CIBuildPackageInfo />
     </PropertyGroup>
+    <!-- CI: AppVeyor -->
     <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
       <_CIBuildInfo>AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_CIBuildInfo>
       <_CIBuildPackageInfo>appveyor.$(APPVEYOR_BUILD_NUMBER)</_CIBuildPackageInfo>
+    </PropertyGroup>
+    <!-- CI: GitHub Actions -->
+    <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' And '$(GITHUB_RUN_ATTEMPT)' != '' ">
+      <_CIBuildInfo>GitHub build #$(GITHUB_RUN_ATTEMPT)</_CIBuildInfo>
+      <_CIBuildPackageInfo>github.$(GITHUB_RUN_ATTEMPT)</_CIBuildPackageInfo>
     </PropertyGroup>
     <!-- FIXME: If no CI applies, should this be flagged in metadata? -->
   </Target>
