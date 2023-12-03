@@ -8,7 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Initial Project Contents", 
 		initial-project-contents\.editorconfig = initial-project-contents\.editorconfig
 		initial-project-contents\.gitattributes = initial-project-contents\.gitattributes
 		initial-project-contents\.gitignore = initial-project-contents\.gitignore
-		initial-project-contents\appveyor.yml = initial-project-contents\appveyor.yml
 		initial-project-contents\build-package.ps1 = initial-project-contents\build-package.ps1
 	EndProjectSection
 EndProject
@@ -29,7 +28,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Fi
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		appveyor.yml = appveyor.yml
 		build-package.ps1 = build-package.ps1
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
