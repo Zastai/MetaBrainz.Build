@@ -15,12 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{CAECA5
 	ProjectSection(SolutionItems) = preProject
 		initial-project-contents\.github\github-labels.yml = initial-project-contents\.github\github-labels.yml
 		initial-project-contents\.github\release-drafter.yml = initial-project-contents\.github\release-drafter.yml
+		.github\dependabot.yml = .github\dependabot.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{4E36C543-3A10-4605-AE5E-097CB9806C7F}"
 	ProjectSection(SolutionItems) = preProject
 		initial-project-contents\.github\workflows\release-drafter.yml = initial-project-contents\.github\workflows\release-drafter.yml
 		initial-project-contents\.github\workflows\update-labels.yml = initial-project-contents\.github\workflows\update-labels.yml
+		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{C9D2F120-3CEA-499A-B5BD-DFF6684631A4}"
