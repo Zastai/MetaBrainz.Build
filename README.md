@@ -1,4 +1,4 @@
-# MetaBrainz.Build
+# MetaBrainz.Build [![Build Status][CI-S]][CI-L] [![NuGet Package Version][NuGet-S]][NuGet-L]
 
 This used to be a collection of build support files, pulled in (as a git
 submodule) by other `MetaBrainz.xxx` projects.
@@ -24,3 +24,9 @@ This consists of:
 
 At some point, this could be extended to include MSBuild tasks, should
 they become useful; in the meantime, there is no code present.
+
+[CI-S]: https://github.com/Zastai/MetaBrainz.Build/actions/workflows/build.yml/badge.svg
+[CI-L]: https://github.com/Zastai/MetaBrainz.Build/actions/workflows/build.yml
+
+[NuGet-S]: https://img.shields.io/nuget/v/MetaBrainz.Build.Sdk
+[NuGet-L]: https://www.nuget.org/packages/MetaBrainz.Build.Sdk
