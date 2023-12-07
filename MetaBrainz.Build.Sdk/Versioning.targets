@@ -93,7 +93,6 @@
   </Target>
 
   <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _GetCIBuildInfo; _ParseVersionSpecification">
-    <!-- TODO: Include Git info in informational version: 1.2-pre (branch '<branchname>', commit <commithash>). -->
     <PropertyGroup>
       <AssemblyVersion>$(_Version_API)</AssemblyVersion>
       <FileVersion>$(_Version_Full)</FileVersion>
@@ -104,6 +103,8 @@
       <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' And '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
       <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' ">$(_ExtraInfo)$(_CIBuildInfo)</_ExtraInfo>
       <InformationalVersion Condition=" '$(_ExtraInfo)' != '' ">$(InformationalVersion) ($(_ExtraInfo))</InformationalVersion>
+      <!-- We add VCS info, so we do not want the SDK to append the revision ID. -->
+      <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     </PropertyGroup>
     <!-- Debug Output -->
     <Message Importance="$(DebugMessageImportance)" Text="Assembly Info Properties:"/>
