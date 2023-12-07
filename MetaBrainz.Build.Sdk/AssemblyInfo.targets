@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <!-- Set up attributes not (always) handled by the SDK. -->
+  <Target Name="_GetMoreAssemblyAttributes" AfterTargets="GetAssemblyAttributes" Condition=" '$(GenerateAssemblyInfo)' == 'true' ">
+
+    <PropertyGroup>
+      <GenerateAssemblyCLSCompliantAttributes Condition=" '' == '$(GenerateAssemblyCLSCompliantAttributes)' ">true</GenerateAssemblyCLSCompliantAttributes>
+      <GenerateAssemblyComVisibleAttributes   Condition=" '' == '$(GenerateAssemblyComVisibleAttributes)'   ">true</GenerateAssemblyComVisibleAttributes>
+      <GenerateAssemblyCultureAttributes      Condition=" '' == '$(GenerateAssemblyCultureAttributes)'      ">true</GenerateAssemblyCultureAttributes>
+      <GenerateAssemblyGuidAttributes         Condition=" '' == '$(GenerateAssemblyGuidAttributes)'         ">true</GenerateAssemblyGuidAttributes>
+      <GenerateAssemblyTrademarkAttributes    Condition=" '' == '$(GenerateAssemblyTrademarkAttributes)'    ">true</GenerateAssemblyTrademarkAttributes>
+    </PropertyGroup>
+
+    <ItemGroup Condition=" '$(GenerateAssemblyCLSCompliantAttributes)' == 'true' And '$(AssemblyIsCLSCompliant)' != '' ">
+      <AssemblyAttribute Include="System.CLSCompliantAttribute">
+        <_Parameter1>$(AssemblyIsCLSCompliant)</_Parameter1>
+        <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+      </AssemblyAttribute>
+    </ItemGroup>  
+
+    <ItemGroup Condition=" '$(GenerateAssemblyComVisibleAttributes)' == 'true' And '$(AssemblyIsComVisible)' != '' ">
+      <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
+        <_Parameter1>$(AssemblyIsComVisible)</_Parameter1>
+        <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+      </AssemblyAttribute>
+    </ItemGroup>  
+
+    <ItemGroup Condition=" '$(GenerateAssemblyCultureAttributes)' == 'true' And '$(AssemblyCulture)' != '' ">
+      <AssemblyAttribute Include="System.Reflection.AssemblyCultureAttribute">
+        <_Parameter1>$(AssemblyCulture)</_Parameter1>
+        <_Parameter1_TypeName>System.String</_Parameter1_TypeName>
+      </AssemblyAttribute>
+    </ItemGroup>  
+
+    <ItemGroup Condition=" '$(GenerateAssemblyGuidAttributes)' == 'true' And '$(AssemblyGuid)' != '' ">
+      <AssemblyAttribute Include="System.Runtime.InteropServices.GuidAttribute">
+        <_Parameter1>$(AssemblyGuid)</_Parameter1>
+        <_Parameter1_TypeName>System.String</_Parameter1_TypeName>
+      </AssemblyAttribute>
+    </ItemGroup>  
+
+    <ItemGroup Condition=" '$(GenerateAssemblyTrademarkAttributes)' == 'true' And '$(AssemblyTrademark)' != '' ">
+      <AssemblyAttribute Include="System.Reflection.AssemblyTrademarkAttribute">
+        <_Parameter1>$(AssemblyTrademark)</_Parameter1>
+        <_Parameter1_TypeName>System.String</_Parameter1_TypeName>
+      </AssemblyAttribute>
+    </ItemGroup>  
+
+  </Target>
+
+  </Project>
+  
