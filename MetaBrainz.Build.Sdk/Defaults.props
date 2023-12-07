@@ -9,8 +9,8 @@
 
   <!-- Set up defaults for the frameworks to target. -->
   <PropertyGroup>
-      <!-- We target the active LTS versions of .NET. No more .NET Core or .NET Framework. -->
-      <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
+    <!-- We target the active LTS versions of .NET. No more .NET Core or .NET Framework. -->
+    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <!-- Set up the importance for debug messages issued by SDK targets. -->
