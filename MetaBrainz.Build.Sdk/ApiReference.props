@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <PropertyGroup>
+    <ApiReferenceFormat>cs-md</ApiReferenceFormat>
+    <ApiReferenceOutputDir>$([MSBuild]::NormalizeDirectory('$(MetaBrainzProjectRoot)', 'public-api'))</ApiReferenceOutputDir>
+    <ApiReferenceOutputExt>.$(TargetFramework).cs.md</ApiReferenceOutputExt>
+    <CreateApiReferenceOutputDir>true</CreateApiReferenceOutputDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Attributes to exclude from the API Reference. -->
+    <ApiReferenceExcludeAttribute Include="System.Diagnostics.DebuggableAttribute" />
+    <ApiReferenceExcludeAttribute Include="System.Diagnostics.DebuggerStepThroughAttribute" />
+    <ApiReferenceExcludeAttribute Include="System.Runtime.CompilerServices.CompilationRelaxationsAttribute" />
+    <ApiReferenceExcludeAttribute Include="System.Runtime.CompilerServices.RefSafetyRulesAttribute" />
+    <ApiReferenceExcludeAttribute Include="System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" />
+  </ItemGroup>
+
+</Project>

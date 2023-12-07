@@ -7,6 +7,8 @@
 
   <Import Project="CSharp.props" />
 
+  <Import Project="ApiReference.props" />
+
   <Import Project="NuGet.props" />
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />

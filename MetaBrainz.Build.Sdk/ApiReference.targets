@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <PropertyGroup>
+    <GenerateApiReference Condition=" '$(GenerateApiReference)' == '' ">true</GenerateApiReference>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(GenerateApiReference)' == 'true' ">
+    <PackageReference Include="Zastai.Build.ApiReference" Version="2.0.1" IsImplicitlyDefined="true">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
