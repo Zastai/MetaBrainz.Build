@@ -32,7 +32,7 @@ jobs:
     - name: Create global.json to force use of .NET SDK ${{steps.setup.outputs.dotnet-version}}
       run: echo '{"sdk":{"version":"${{steps.setup.outputs.dotnet-version}}"}}' > ./global.json
     - name: Run build script (${{matrix.configuration}})
-      run: pwsh ./build-package.ps1 -WithBinLog -Configuration ${{matrix.configuration}}
+      run: pwsh ./build-package.ps1 -ContinuousIntegration -WithBinLog -Configuration ${{matrix.configuration}}
     - name: "Artifact: MSBuild Logs"
       uses: actions/upload-artifact@v3
       if: failure()

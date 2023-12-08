@@ -2,6 +2,8 @@
 <!-- Deal With Versions (Assembly/Package). -->
 <Project>
 
+  <!--#region Version Control Information-->
+
   <Target Name="_GetVCSInfo" DependsOnTargets="InitializeSourceControlInformation">
     <PropertyGroup>
       <_VCSBranchName />
@@ -13,13 +15,19 @@
       <_VCSPackageInfo />
     </PropertyGroup>
     <PropertyGroup>
-      <!-- Get the revision from SourceLink. -->
+      <!-- Get the revision ID (i.e. the commit hash) from SourceLink. -->
       <_VCSRevision Condition=" '$(SourceControlInformationFeatureSupported)' == 'true' And '$(SourceRevisionId)' != '' ">$(SourceRevisionId)</_VCSRevision>
     </PropertyGroup>
     <!-- TODO: Get info from git ourselves; SourceLink only provides the revision (commit hash). -->
     <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' ">
-      <!-- TODO: Get PR info (PR number + base branch). -->
+      <!-- In the unlikely event that SourceLink fails, take the commit hash provided by GitHub Actions. -->
+      <_VCSRevision Condition=" '$(GITHUB_SHA)' != '' And '$(_VCSRevision)' == '' ">$(GITHUB_SHA)</_VCSRevision>
+      <!-- Get branch/tag info if available. -->
+      <_VCSBranchName Condition=" '$(GITHUB_EVENT_NAME)' == 'pull_request' And '$(_VCSBranchName)' == '' ">$(GITHUB_BASE_REF)</_VCSBranchName>
       <_VCSBranchName Condition=" '$(GITHUB_REF_TYPE)' == 'branch' And '$(_VCSBranchName)' == '' ">$(GITHUB_REF_NAME)</_VCSBranchName>
+      <_VCSPullRequest Condition=" '$(GITHUB_EVENT_NAME)' == 'pull_request' And '$(_VCSPullRequest)' == '' ">$(GITHUB_REF_NAME)</_VCSPullRequest>
+      <_VCSPullRequest Condition=" $(_VCSPullRequest.StartsWith('refs/pull/')) ">$(_VCSPullRequest.Substring(10))</_VCSPullRequest>
+      <_VCSPullRequest Condition=" $(_VCSPullRequest.EndsWith('/merge')) ">$(_VCSPullRequest.Remove($([MSBuild]::Subtract($(_VCSPullRequest.Length), 6))))</_VCSPullRequest>
       <_VCSTagName Condition=" '$(GITHUB_REF_TYPE)' == 'tag' And '$(_VCSTagName)' == '' ">$(GITHUB_REF_NAME)</_VCSTagName>
     </PropertyGroup>
     <PropertyGroup>
@@ -27,6 +35,10 @@
       <_VCSInfo Condition=" '$(_VCSTagName)' == '' ">commit $(_VCSRevision)</_VCSInfo>
       <_VCSInfo Condition=" '$(_VCSBranchName)' != '' ">$(_VCSInfo) on $(_VCSBranchName)</_VCSInfo>
       <_VCSInfo Condition=" '$(_VCSPullRequest)' != '' ">$(_VCSInfo) for PR #$(_VCSPullRequest)</_VCSInfo>
+    </PropertyGroup>
+    <PropertyGroup>
+      <_VCSPackageInfo Condition=" '$(_VCSPackageInfo)' != '' And '$(_VCSPullRequest)' != '' ">$(_VCSPackageInfo).</_VCSPackageInfo>
+      <_VCSPackageInfo Condition=" '$(_VCSPullRequest)' != '' ">pr.$(_VCSPullRequest)</_VCSPackageInfo>
     </PropertyGroup>
   </Target>
 
@@ -42,32 +54,43 @@
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSPackageInfo)'  != '' " Text="- Package Info  : $(_VCSPackageInfo)" />
   </Target>
 
-  <Target Name="_GetCIBuildInfo">
+  <!--#endregion-->
+
+  <!--#region Build Information-->
+
+  <Target Name="_GetBuildInfo">
     <PropertyGroup>
-      <_CIBuildInfo />
-      <_CIBuildPackageInfo />
+      <_BuildInfo />
+      <_BuildPackageInfo />
     </PropertyGroup>
     <!-- CI: AppVeyor -->
     <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
-      <_CIBuildInfo>AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_CIBuildInfo>
-      <_CIBuildPackageInfo>appveyor.$(APPVEYOR_BUILD_NUMBER)</_CIBuildPackageInfo>
+      <_BuildInfo>AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_BuildInfo>
+      <_BuildPackageInfo>appveyor.$(APPVEYOR_BUILD_NUMBER)</_BuildPackageInfo>
     </PropertyGroup>
     <!-- CI: GitHub Actions -->
     <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' And '$(GITHUB_RUN_NUMBER)' != '' ">
-      <_CIBuildInfo>GitHub build #$(GITHUB_RUN_NUMBER)</_CIBuildInfo>
-      <_CIBuildInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' And '$(GITHUB_RUN_ATTEMPT)' != '1' ">$(_CIBuildInfo), attempt #$(GITHUB_RUN_ATTEMPT)</_CIBuildInfo>
-      <_CIBuildPackageInfo>github.$(GITHUB_RUN_NUMBER)</_CIBuildPackageInfo>
-      <_CIBuildPackageInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' ">$(_CIBuildPackageInfo).$(GITHUB_RUN_ATTEMPT)</_CIBuildPackageInfo>
+      <_BuildInfo>GitHub build #$(GITHUB_RUN_NUMBER)</_BuildInfo>
+      <_BuildInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' And '$(GITHUB_RUN_ATTEMPT)' != '1' ">$(_BuildInfo), attempt #$(GITHUB_RUN_ATTEMPT)</_BuildInfo>
+      <_BuildPackageInfo>github.$(GITHUB_RUN_NUMBER)</_BuildPackageInfo>
+      <_BuildPackageInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' ">$(_BuildPackageInfo).$(GITHUB_RUN_ATTEMPT)</_BuildPackageInfo>
     </PropertyGroup>
-    <!-- FIXME: If no CI applies, should this be flagged in metadata? -->
+    <!-- No CI detected: Assume local build -->
+    <PropertyGroup Condition=" '$(_BuildInfo)' == '' And '$(_BuildPackageInfo)' == '' ">
+      <_BuildInfo>local build</_BuildInfo>
+      <_BuildPackageInfo>local.$([System.DateTime]::UtcNow.ToString('yyyyMMdd.HHmmssff'))</_BuildPackageInfo>
+    </PropertyGroup>
   </Target>
 
-  <Target Name="_ShowCIBuildInfo" AfterTargets="_GetCIBuildInfo">
-    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         == '' " Text="No CI Build Information" />
-    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         != '' " Text="CI Build Information:" />
-    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         != '' " Text="- Description  : $(_CIBuildInfo)" />
-    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildPackageInfo)'  != '' " Text="- Package Info : $(_CIBuildPackageInfo)" />
+  <Target Name="_ShowBuildInfo" AfterTargets="_GetBuildInfo">
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_BuildInfo)'         != '' " Text="Build Information:" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_BuildInfo)'         != '' " Text="- Description  : $(_BuildInfo)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_BuildPackageInfo)'  != '' " Text="- Package Info : $(_BuildPackageInfo)" />
   </Target>
+
+  <!--#endregion-->
+
+  <!--#region Version Number Processing-->
 
   <Target Name="_ParseVersionSpecification">
     <!-- First Step: Split using a regex. -->
@@ -92,7 +115,11 @@
     <Message Importance="$(DebugMessageImportance)" Text="Canonical Version: $(Version)"/>
   </Target>
 
-  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _GetCIBuildInfo; _ParseVersionSpecification">
+  <!--#endregion-->
+
+  <!--#region AssemblyInfo Properties-->
+
+  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _GetBuildInfo; _ParseVersionSpecification">
     <PropertyGroup>
       <AssemblyVersion>$(_Version_API)</AssemblyVersion>
       <FileVersion>$(_Version_Full)</FileVersion>
@@ -100,8 +127,8 @@
       <_ExtraInfo />
       <_ExtraInfo Condition=" '$(_VCSInfo)' != '' And '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
       <_ExtraInfo Condition=" '$(_VCSInfo)' != '' ">$(_ExtraInfo)$(_VCSInfo)</_ExtraInfo>
-      <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' And '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
-      <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' ">$(_ExtraInfo)$(_CIBuildInfo)</_ExtraInfo>
+      <_ExtraInfo Condition=" '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
+      <_ExtraInfo Condition=" '$(_BuildInfo)' != '' ">$(_ExtraInfo)$(_BuildInfo)</_ExtraInfo>
       <InformationalVersion Condition=" '$(_ExtraInfo)' != '' ">$(InformationalVersion) ($(_ExtraInfo))</InformationalVersion>
       <!-- We add VCS info, so we do not want the SDK to append the revision ID. -->
       <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -113,18 +140,22 @@
     <Message Importance="$(DebugMessageImportance)" Text="- InformationalVersion : $(InformationalVersion)"/>
   </Target>
 
+  <!--#endregion-->
+
+  <!--#region PackageVersion Construction-->
+
   <PropertyGroup>
     <!-- This ensures the PackageVersion computation is run both when building a project's package and when resolving a project reference to a package reference. -->
     <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn); _SetPackagePropertiesFromVersion</GetPackageVersionDependsOn>
   </PropertyGroup>
 
-  <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _GetCIBuildInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
+  <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _GetBuildInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
     <PropertyGroup>
       <_ExtraPackageInfo />
       <_ExtraPackageInfo Condition=" '$(_VCSPackageInfo)' != '' And '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo).</_ExtraPackageInfo>
       <_ExtraPackageInfo Condition=" '$(_VCSPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_VCSPackageInfo)</_ExtraPackageInfo>
-      <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' != '' And '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo); </_ExtraPackageInfo>
-      <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_CIBuildPackageInfo)</_ExtraPackageInfo>
+      <_ExtraPackageInfo Condition=" '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo).</_ExtraPackageInfo>
+      <_ExtraPackageInfo Condition=" '$(_BuildPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_BuildPackageInfo)</_ExtraPackageInfo>
       <PackageVersion>$(Version)</PackageVersion>
       <PackageVersion Condition=" '$(_ExtraPackageInfo)' != '' And !$(_Version_Pre.Contains('-')) ">$(PackageVersion)+$(_ExtraPackageInfo)</PackageVersion>
       <PackageVersion Condition=" '$(_ExtraPackageInfo)' != '' And  $(_Version_Pre.Contains('-')) ">$(PackageVersion).$(_ExtraPackageInfo)</PackageVersion>
@@ -133,5 +164,7 @@
     <Message Importance="$(DebugMessageImportance)" Text="Package Properties:"/>
     <Message Importance="$(DebugMessageImportance)" Text="- PackageVersion : $(PackageVersion)"/>
   </Target>
+
+  <!--#endregion-->
 
 </Project>
