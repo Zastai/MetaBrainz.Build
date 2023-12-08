@@ -21,7 +21,11 @@
       <!-- In the unlikely event that SourceLink fails, take the commit hash provided by GitHub Actions. -->
       <_VCSRevision Condition=" '$(GITHUB_SHA)' != '' And '$(_VCSRevision)' == '' ">$(GITHUB_SHA)</_VCSRevision>
       <!-- Get branch/tag info if available. -->
+      <_VCSBranchName Condition=" '$(GITHUB_EVENT_NAME)' == 'pull_request' And '$(_VCSBranchName)' == '' ">$(GITHUB_BASE_REF)</_VCSBranchName>
       <_VCSBranchName Condition=" '$(GITHUB_REF_TYPE)' == 'branch' And '$(_VCSBranchName)' == '' ">$(GITHUB_REF_NAME)</_VCSBranchName>
+      <_VCSPullRequest Condition=" '$(GITHUB_EVENT_NAME)' == 'pull_request' And '$(_VCSPullRequest)' == '' ">$(GITHUB_REF_NAME)</_VCSPullRequest>
+      <_VCSPullRequest Condition=" $(_VCSPullRequest.StartsWith('refs/pull/')) ">$(_VCSPullRequest.Substring(10))</_VCSPullRequest>
+      <_VCSPullRequest Condition=" $(_VCSPullRequest.EndsWith('/merge')) ">$(_VCSPullRequest.Remove($([MSBuild]::Subtract($(_VCSPullRequest.Length), 6))))</_VCSPullRequest>
       <_VCSTagName Condition=" '$(GITHUB_REF_TYPE)' == 'tag' And '$(_VCSTagName)' == '' ">$(GITHUB_REF_NAME)</_VCSTagName>
     </PropertyGroup>
     <PropertyGroup>
