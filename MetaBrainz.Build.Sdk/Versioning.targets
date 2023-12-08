@@ -34,6 +34,10 @@
       <_VCSInfo Condition=" '$(_VCSBranchName)' != '' ">$(_VCSInfo) on $(_VCSBranchName)</_VCSInfo>
       <_VCSInfo Condition=" '$(_VCSPullRequest)' != '' ">$(_VCSInfo) for PR #$(_VCSPullRequest)</_VCSInfo>
     </PropertyGroup>
+    <PropertyGroup>
+      <_VCSPackageInfo Condition=" '$(_VCSPackageInfo)' != '' And '$(_VCSPullRequest)' != '' ">$(_VCSPackageInfo).</_VCSPackageInfo>
+      <_VCSPackageInfo Condition=" '$(_VCSPullRequest)' != '' ">pr.$(_VCSPullRequest)</_VCSPackageInfo>
+    </PropertyGroup>
   </Target>
 
   <Target Name="_ShowVCSInfo" AfterTargets="_GetVCSInfo">
