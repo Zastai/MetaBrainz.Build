@@ -2,6 +2,8 @@
 <!-- Deal With Versions (Assembly/Package). -->
 <Project>
 
+  <!--#region Version Control Information-->
+
   <Target Name="_GetVCSInfo" DependsOnTargets="InitializeSourceControlInformation">
     <PropertyGroup>
       <_VCSBranchName />
@@ -52,6 +54,10 @@
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSPackageInfo)'  != '' " Text="- Package Info  : $(_VCSPackageInfo)" />
   </Target>
 
+  <!--#endregion-->
+
+  <!--#region Build Information-->
+
   <Target Name="_GetBuildInfo">
     <PropertyGroup>
       <_BuildInfo />
@@ -82,6 +88,10 @@
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_BuildPackageInfo)'  != '' " Text="- Package Info : $(_BuildPackageInfo)" />
   </Target>
 
+  <!--#endregion-->
+
+  <!--#region Version Number Processing-->
+
   <Target Name="_ParseVersionSpecification">
     <!-- First Step: Split using a regex. -->
     <PropertyGroup>
@@ -105,6 +115,10 @@
     <Message Importance="$(DebugMessageImportance)" Text="Canonical Version: $(Version)"/>
   </Target>
 
+  <!--#endregion-->
+
+  <!--#region AssemblyInfo Properties-->
+
   <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _GetBuildInfo; _ParseVersionSpecification">
     <PropertyGroup>
       <AssemblyVersion>$(_Version_API)</AssemblyVersion>
@@ -126,6 +140,10 @@
     <Message Importance="$(DebugMessageImportance)" Text="- InformationalVersion : $(InformationalVersion)"/>
   </Target>
 
+  <!--#endregion-->
+
+  <!--#region PackageVersion Construction-->
+
   <PropertyGroup>
     <!-- This ensures the PackageVersion computation is run both when building a project's package and when resolving a project reference to a package reference. -->
     <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn); _SetPackagePropertiesFromVersion</GetPackageVersionDependsOn>
@@ -146,5 +164,7 @@
     <Message Importance="$(DebugMessageImportance)" Text="Package Properties:"/>
     <Message Importance="$(DebugMessageImportance)" Text="- PackageVersion : $(PackageVersion)"/>
   </Target>
+
+  <!--#endregion-->
 
 </Project>
