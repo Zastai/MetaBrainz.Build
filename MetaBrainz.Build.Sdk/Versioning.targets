@@ -100,8 +100,9 @@
       <_ExtraInfo />
       <_ExtraInfo Condition=" '$(_VCSInfo)' != '' And '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
       <_ExtraInfo Condition=" '$(_VCSInfo)' != '' ">$(_ExtraInfo)$(_VCSInfo)</_ExtraInfo>
-      <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' And '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
+      <_ExtraInfo Condition=" '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
       <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' ">$(_ExtraInfo)$(_CIBuildInfo)</_ExtraInfo>
+      <_ExtraInfo Condition=" '$(_CIBuildInfo)' == '' ">$(_ExtraInfo)local build</_ExtraInfo>
       <InformationalVersion Condition=" '$(_ExtraInfo)' != '' ">$(InformationalVersion) ($(_ExtraInfo))</InformationalVersion>
       <!-- We add VCS info, so we do not want the SDK to append the revision ID. -->
       <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -123,8 +124,9 @@
       <_ExtraPackageInfo />
       <_ExtraPackageInfo Condition=" '$(_VCSPackageInfo)' != '' And '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo).</_ExtraPackageInfo>
       <_ExtraPackageInfo Condition=" '$(_VCSPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_VCSPackageInfo)</_ExtraPackageInfo>
-      <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' != '' And '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo); </_ExtraPackageInfo>
+      <_ExtraPackageInfo Condition=" '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo).</_ExtraPackageInfo>
       <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_CIBuildPackageInfo)</_ExtraPackageInfo>
+      <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' == '' ">$(_ExtraPackageInfo)local.$([System.DateTime]::UtcNow.ToString('yyyyMMdd.HHmmssff'))</_ExtraPackageInfo>
       <PackageVersion>$(Version)</PackageVersion>
       <PackageVersion Condition=" '$(_ExtraPackageInfo)' != '' And !$(_Version_Pre.Contains('-')) ">$(PackageVersion)+$(_ExtraPackageInfo)</PackageVersion>
       <PackageVersion Condition=" '$(_ExtraPackageInfo)' != '' And  $(_Version_Pre.Contains('-')) ">$(PackageVersion).$(_ExtraPackageInfo)</PackageVersion>
