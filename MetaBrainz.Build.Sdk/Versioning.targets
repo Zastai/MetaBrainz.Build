@@ -52,31 +52,34 @@
     <Message Importance="$(DebugMessageImportance)" Condition=" '$(_VCSPackageInfo)'  != '' " Text="- Package Info  : $(_VCSPackageInfo)" />
   </Target>
 
-  <Target Name="_GetCIBuildInfo">
+  <Target Name="_GetBuildInfo">
     <PropertyGroup>
-      <_CIBuildInfo />
-      <_CIBuildPackageInfo />
+      <_BuildInfo />
+      <_BuildPackageInfo />
     </PropertyGroup>
     <!-- CI: AppVeyor -->
     <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
-      <_CIBuildInfo>AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_CIBuildInfo>
-      <_CIBuildPackageInfo>appveyor.$(APPVEYOR_BUILD_NUMBER)</_CIBuildPackageInfo>
+      <_BuildInfo>AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_BuildInfo>
+      <_BuildPackageInfo>appveyor.$(APPVEYOR_BUILD_NUMBER)</_BuildPackageInfo>
     </PropertyGroup>
     <!-- CI: GitHub Actions -->
     <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' And '$(GITHUB_RUN_NUMBER)' != '' ">
-      <_CIBuildInfo>GitHub build #$(GITHUB_RUN_NUMBER)</_CIBuildInfo>
-      <_CIBuildInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' And '$(GITHUB_RUN_ATTEMPT)' != '1' ">$(_CIBuildInfo), attempt #$(GITHUB_RUN_ATTEMPT)</_CIBuildInfo>
-      <_CIBuildPackageInfo>github.$(GITHUB_RUN_NUMBER)</_CIBuildPackageInfo>
-      <_CIBuildPackageInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' ">$(_CIBuildPackageInfo).$(GITHUB_RUN_ATTEMPT)</_CIBuildPackageInfo>
+      <_BuildInfo>GitHub build #$(GITHUB_RUN_NUMBER)</_BuildInfo>
+      <_BuildInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' And '$(GITHUB_RUN_ATTEMPT)' != '1' ">$(_BuildInfo), attempt #$(GITHUB_RUN_ATTEMPT)</_BuildInfo>
+      <_BuildPackageInfo>github.$(GITHUB_RUN_NUMBER)</_BuildPackageInfo>
+      <_BuildPackageInfo Condition=" '$(GITHUB_RUN_ATTEMPT)' != '' ">$(_BuildPackageInfo).$(GITHUB_RUN_ATTEMPT)</_BuildPackageInfo>
     </PropertyGroup>
-    <!-- FIXME: If no CI applies, should this be flagged in metadata? -->
+    <!-- No CI detected: Assume local build -->
+    <PropertyGroup Condition=" '$(_BuildInfo)' == '' And '$(_BuildPackageInfo)' == '' ">
+      <_BuildInfo>local build</_BuildInfo>
+      <_BuildPackageInfo>local.$([System.DateTime]::UtcNow.ToString('yyyyMMdd.HHmmssff'))</_BuildPackageInfo>
+    </PropertyGroup>
   </Target>
 
-  <Target Name="_ShowCIBuildInfo" AfterTargets="_GetCIBuildInfo">
-    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         == '' " Text="No CI Build Information" />
-    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         != '' " Text="CI Build Information:" />
-    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildInfo)'         != '' " Text="- Description  : $(_CIBuildInfo)" />
-    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_CIBuildPackageInfo)'  != '' " Text="- Package Info : $(_CIBuildPackageInfo)" />
+  <Target Name="_ShowBuildInfo" AfterTargets="_GetBuildInfo">
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_BuildInfo)'         != '' " Text="Build Information:" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_BuildInfo)'         != '' " Text="- Description  : $(_BuildInfo)" />
+    <Message Importance="$(DebugMessageImportance)" Condition=" '$(_BuildPackageInfo)'  != '' " Text="- Package Info : $(_BuildPackageInfo)" />
   </Target>
 
   <Target Name="_ParseVersionSpecification">
@@ -102,7 +105,7 @@
     <Message Importance="$(DebugMessageImportance)" Text="Canonical Version: $(Version)"/>
   </Target>
 
-  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _GetCIBuildInfo; _ParseVersionSpecification">
+  <Target Name="_SetAssemblyInfoPropertiesFromVersion" BeforeTargets="GenerateAdditionalSources" DependsOnTargets="_GetVCSInfo; _GetBuildInfo; _ParseVersionSpecification">
     <PropertyGroup>
       <AssemblyVersion>$(_Version_API)</AssemblyVersion>
       <FileVersion>$(_Version_Full)</FileVersion>
@@ -111,8 +114,7 @@
       <_ExtraInfo Condition=" '$(_VCSInfo)' != '' And '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
       <_ExtraInfo Condition=" '$(_VCSInfo)' != '' ">$(_ExtraInfo)$(_VCSInfo)</_ExtraInfo>
       <_ExtraInfo Condition=" '$(_ExtraInfo)' != '' ">$(_ExtraInfo); </_ExtraInfo>
-      <_ExtraInfo Condition=" '$(_CIBuildInfo)' != '' ">$(_ExtraInfo)$(_CIBuildInfo)</_ExtraInfo>
-      <_ExtraInfo Condition=" '$(_CIBuildInfo)' == '' ">$(_ExtraInfo)local build</_ExtraInfo>
+      <_ExtraInfo Condition=" '$(_BuildInfo)' != '' ">$(_ExtraInfo)$(_BuildInfo)</_ExtraInfo>
       <InformationalVersion Condition=" '$(_ExtraInfo)' != '' ">$(InformationalVersion) ($(_ExtraInfo))</InformationalVersion>
       <!-- We add VCS info, so we do not want the SDK to append the revision ID. -->
       <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -129,14 +131,13 @@
     <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn); _SetPackagePropertiesFromVersion</GetPackageVersionDependsOn>
   </PropertyGroup>
 
-  <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _GetCIBuildInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
+  <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _GetBuildInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
     <PropertyGroup>
       <_ExtraPackageInfo />
       <_ExtraPackageInfo Condition=" '$(_VCSPackageInfo)' != '' And '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo).</_ExtraPackageInfo>
       <_ExtraPackageInfo Condition=" '$(_VCSPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_VCSPackageInfo)</_ExtraPackageInfo>
       <_ExtraPackageInfo Condition=" '$(_ExtraPackageInfo)' != '' ">$(_ExtraPackageInfo).</_ExtraPackageInfo>
-      <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_CIBuildPackageInfo)</_ExtraPackageInfo>
-      <_ExtraPackageInfo Condition=" '$(_CIBuildPackageInfo)' == '' ">$(_ExtraPackageInfo)local.$([System.DateTime]::UtcNow.ToString('yyyyMMdd.HHmmssff'))</_ExtraPackageInfo>
+      <_ExtraPackageInfo Condition=" '$(_BuildPackageInfo)' != '' ">$(_ExtraPackageInfo)$(_BuildPackageInfo)</_ExtraPackageInfo>
       <PackageVersion>$(Version)</PackageVersion>
       <PackageVersion Condition=" '$(_ExtraPackageInfo)' != '' And !$(_Version_Pre.Contains('-')) ">$(PackageVersion)+$(_ExtraPackageInfo)</PackageVersion>
       <PackageVersion Condition=" '$(_ExtraPackageInfo)' != '' And  $(_Version_Pre.Contains('-')) ">$(PackageVersion).$(_ExtraPackageInfo)</PackageVersion>
