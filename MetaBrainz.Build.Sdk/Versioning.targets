@@ -13,12 +13,14 @@
       <_VCSPackageInfo />
     </PropertyGroup>
     <PropertyGroup>
-      <!-- Get the revision from SourceLink. -->
+      <!-- Get the revision ID (i.e. the commit hash) from SourceLink. -->
       <_VCSRevision Condition=" '$(SourceControlInformationFeatureSupported)' == 'true' And '$(SourceRevisionId)' != '' ">$(SourceRevisionId)</_VCSRevision>
     </PropertyGroup>
     <!-- TODO: Get info from git ourselves; SourceLink only provides the revision (commit hash). -->
     <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' ">
-      <!-- TODO: Get PR info (PR number + base branch). -->
+      <!-- In the unlikely event that SourceLink fails, take the commit hash provided by GitHub Actions. -->
+      <_VCSRevision Condition=" '$(GITHUB_SHA)' != '' And '$(_VCSRevision)' == '' ">$(GITHUB_SHA)</_VCSRevision>
+      <!-- Get branch/tag info if available. -->
       <_VCSBranchName Condition=" '$(GITHUB_REF_TYPE)' == 'branch' And '$(_VCSBranchName)' == '' ">$(GITHUB_REF_NAME)</_VCSBranchName>
       <_VCSTagName Condition=" '$(GITHUB_REF_TYPE)' == 'tag' And '$(_VCSTagName)' == '' ">$(GITHUB_REF_NAME)</_VCSTagName>
     </PropertyGroup>
