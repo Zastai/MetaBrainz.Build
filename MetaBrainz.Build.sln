@@ -42,12 +42,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{8043F9
 	ProjectSection(SolutionItems) = preProject
 		.github\github-labels.yml = .github\github-labels.yml
 		.github\release-drafter.yml = .github\release-drafter.yml
+		initial-project-contents\.github\dependabot.yml = initial-project-contents\.github\dependabot.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{63CFE3C8-FF6E-4351-9143-7EE2FB681E34}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\release-drafter.yml = .github\workflows\release-drafter.yml
 		.github\workflows\update-labels.yml = .github\workflows\update-labels.yml
+		initial-project-contents\.github\workflows\build.yml = initial-project-contents\.github\workflows\build.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaBrainz.Build.Sdk", "MetaBrainz.Build.Sdk\MetaBrainz.Build.Sdk.csproj", "{20B49106-BE37-4358-8BBB-7DDD6443B0AA}"
