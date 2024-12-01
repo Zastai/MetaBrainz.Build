@@ -15,11 +15,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- There's no actual code in this, but set a target anyway. -->
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <ContentTargetFolders>sdk</ContentTargetFolders>
     <IncludeContent>true</IncludeContent>
   </PropertyGroup>
