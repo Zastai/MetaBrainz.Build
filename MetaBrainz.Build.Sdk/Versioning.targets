@@ -63,11 +63,6 @@
       <_BuildInfo />
       <_BuildPackageInfo />
     </PropertyGroup>
-    <!-- CI: AppVeyor -->
-    <PropertyGroup Condition=" '$(APPVEYOR)' == 'true' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">
-      <_BuildInfo>AppVeyor build #$(APPVEYOR_BUILD_NUMBER)</_BuildInfo>
-      <_BuildPackageInfo>appveyor.$(APPVEYOR_BUILD_NUMBER)</_BuildPackageInfo>
-    </PropertyGroup>
     <!-- CI: GitHub Actions -->
     <PropertyGroup Condition=" '$(CI)' == 'true' And '$(GITHUB_ACTIONS)' == 'true' And '$(GITHUB_RUN_NUMBER)' != '' ">
       <_BuildInfo>GitHub build #$(GITHUB_RUN_NUMBER)</_BuildInfo>
@@ -146,7 +141,10 @@
 
   <PropertyGroup>
     <!-- This ensures the PackageVersion computation is run both when building a project's package and when resolving a project reference to a package reference. -->
-    <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn); _SetPackagePropertiesFromVersion</GetPackageVersionDependsOn>
+    <GetPackageVersionDependsOn>
+      $(GetPackageVersionDependsOn);
+      _SetPackagePropertiesFromVersion;
+    </GetPackageVersionDependsOn>
   </PropertyGroup>
 
   <Target Name="_SetPackagePropertiesFromVersion" DependsOnTargets="_GetVCSInfo; _GetBuildInfo; _ParseVersionSpecification" Condition=" '$(IsPackable)' != 'False' ">
