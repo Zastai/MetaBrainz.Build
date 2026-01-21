@@ -1,0 +1,40 @@
+<Solution>
+  <Folder Name="/Initial Project Contents/">
+    <File Path="initial-project-contents/.editorconfig" />
+    <File Path="initial-project-contents/.gitattributes" />
+    <File Path="initial-project-contents/.gitignore" />
+    <File Path="initial-project-contents/build-package.ps1" />
+  </Folder>
+  <Folder Name="/Initial Project Contents/GitHub/">
+    <File Path="initial-project-contents/.github/dependabot.yml" />
+    <File Path="initial-project-contents/.github/github-labels.yml" />
+    <File Path="initial-project-contents/.github/release-drafter.yml" />
+  </Folder>
+  <Folder Name="/Initial Project Contents/GitHub/Actions/">
+    <File Path="initial-project-contents/.github/workflows/build.yml" />
+    <File Path="initial-project-contents/.github/workflows/release-drafter.yml" />
+    <File Path="initial-project-contents/.github/workflows/update-labels.yml" />
+  </Folder>
+  <Folder Name="/Support Files/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="build-package.ps1" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Support Files/GitHub/">
+    <File Path=".github/dependabot.yml" />
+    <File Path=".github/github-labels.yml" />
+    <File Path=".github/release-drafter.yml" />
+  </Folder>
+  <Folder Name="/Support Files/GitHub/Actions/">
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/release-drafter.yml" />
+    <File Path=".github/workflows/update-labels.yml" />
+  </Folder>
+  <Project Path="MetaBrainz.Build.Sdk/MetaBrainz.Build.Sdk.csproj" />
+</Solution>
